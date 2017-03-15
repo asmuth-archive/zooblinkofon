@@ -5,6 +5,35 @@
 #include "serial.h"
 #include "led_controller.h"
 
+iot9000::avr::SerialPort serial_port;
+iot9000::avr::LEDController led_controller;
+
+ISR(USART_RX_vect) {
+  serial_port.handleInterrupt();
+}
+
+ISR(TIMER0_OVF_vect) {
+  led_controller.refreshDisplay();
+}
+
+void execute_command() {
+  led_controller.setLEDColor(0, 255, 0, 255);
+}
+
+int main(void) {
+  sei(); // enable interrupts
+
+  // enable timer interrupt
+  TIMSK0 = (1 << TOIE0);
+  TCNT0 = 0x00;
+  TCCR0B |= (1 << CS02) | (1 << CS00);
+
+  led_controller.refreshDisplay();
+  serial_port.setReceiveCallback(&execute_command);
+
+  for (;;) {}
+}
+
 //void colorfade() {
 //  DDRC = 1; // pin 0 is output, everything else input
 //
@@ -50,19 +79,3 @@
 //    _delay_ms(1);
 //  }
 //}
-
-int main(void) {
-  sei(); // enable interrupts
-
-  iot9000::LEDController led_controller;
-  led_controller.refreshDisplay();
-
-  auto serial = iot9000::avr::SerialPort::getPort();
-  //serial->setReceiveCallback(&hauptsache_strobo);
-
-  for (;;) {
-    serial->sendNonblock("X", 1);
-    _delay_ms(100);
-  }
-}
-

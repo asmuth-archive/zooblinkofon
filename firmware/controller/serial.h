@@ -12,7 +12,6 @@ public:
   static const uint32_t kClockBaud = 38400;
 
   SerialPort();
-  static SerialPort* getPort();
 
   uint32_t sendNonblock(const char* data, uint32_t len);
 
