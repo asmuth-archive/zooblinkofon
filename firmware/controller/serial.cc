@@ -22,7 +22,6 @@ SerialPort* SerialPort::getPort() {
 uint32_t SerialPort::sendNonblock(const char* data, uint32_t len) {
   uint32_t bytes_sent = 0;
 
-  // Wait until last byte has been transmitted
   while (bytes_sent < len && (UCSR0A & (1 << UDRE0))) {
     UDR0 = *data++;
     ++bytes_sent;

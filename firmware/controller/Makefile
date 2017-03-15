@@ -7,7 +7,7 @@ OBJECTS = $(SOURCES:.cc=.o)
 all: firmware.hex
 
 %.o: %.cc
-	avr-gcc -Os -DF_CPU=$(TARGET_CPUFREQ) -mmcu=$(TARGET_CPU) -c $(CC_FLAGS) -o $@ $<
+	avr-gcc -Os -DF_CPU=$(TARGET_CPUFREQ) -mmcu=$(TARGET_CPU) -c $(CC_FLAGS) -std=gnu++11 -o $@ $<
 
 firmware.bin: $(OBJECTS)
 	avr-g++ -mmcu=$(TARGET_CPU) $(OBJECTS) -o firmware.bin

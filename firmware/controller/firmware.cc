@@ -56,7 +56,7 @@ int main(void) {
 
   for (;;) {
     serial->sendNonblock("X", 1);
-    _delay_ms(1000);
+    _delay_ms(100);
   }
 }
 
