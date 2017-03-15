@@ -3,6 +3,7 @@
 #include <util/delay.h>
 #include <avr/interrupt.h>
 #include "vendor/light_ws2812.h"
+#include "serial.h"
 
 void colorfade() {
   DDRC = 1; // pin 0 is output, everything else input
@@ -51,5 +52,11 @@ void hauptsache_strobo() {
 }
 
 int main(void) {
-  colorfade();
+  auto serial = iot9000::avr::SerialPort::getPort();
+
+  for (;;) {
+    serial->sendNonblock("X", 1);
+    _delay_ms(1000);
+  }
 }
+
