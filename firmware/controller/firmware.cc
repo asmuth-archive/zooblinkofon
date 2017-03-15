@@ -31,13 +31,13 @@ void hauptsache_strobo() {
   const size_t kLedCount = 32;
   const size_t kStroboSpeed = 10;
 
-  uint16_t j = 0;
+  uint32_t j = 0;
   struct cRGB led[kLedCount];
-  for (;; ++j) {
+  for (;j < kStroboSpeed * 10; ++j) {
     for (size_t i = 0; i < kLedCount; ++i) {
       if ((j / kStroboSpeed) % 2 == 0) {
         led[i].r = 255;
-        led[i].g = 255;
+        led[i].g = 0;
         led[i].b = 255;
       } else {
         led[i].r = 0;
@@ -52,7 +52,11 @@ void hauptsache_strobo() {
 }
 
 int main(void) {
+  sei(); // enable interrupts
+
+  hauptsache_strobo();
   auto serial = iot9000::avr::SerialPort::getPort();
+  serial->setReceiveCallback(&hauptsache_strobo);
 
   for (;;) {
     serial->sendNonblock("X", 1);
