@@ -17,6 +17,11 @@ public:
 
   LEDController();
 
+  void setLEDColors(
+      uint8_t red,
+      uint8_t green,
+      uint8_t blue);
+
   void setLEDColor(
       uint16_t led_idx,
       uint8_t red,

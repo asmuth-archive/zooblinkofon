@@ -12,6 +12,17 @@ LEDController::LEDController() {
   }
 }
 
+void LEDController::setLEDColors(
+    uint8_t red,
+    uint8_t green,
+    uint8_t blue) {
+  for (uint16_t i = 0; i < kLEDCount; ++i) {
+    led_state[i].r = red;
+    led_state[i].g = green;
+    led_state[i].b = blue;
+  }
+}
+
 void LEDController::setLEDColor(
     uint16_t led_idx,
     uint8_t red,

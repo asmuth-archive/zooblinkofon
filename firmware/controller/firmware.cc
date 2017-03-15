@@ -16,8 +16,26 @@ ISR(TIMER0_OVF_vect) {
   led_controller.refreshDisplay();
 }
 
-void execute_command() {
-  led_controller.setLEDColor(0, 255, 0, 255);
+uint16_t execute_command(const char* data, uint16_t len) {
+  switch (data[0]) {
+    case 'q':
+      led_controller.setLEDColors(0, 0, 0);
+      break;
+    case 'a':
+      led_controller.setLEDColors(255, 0, 0);
+      break;
+    case 's':
+      led_controller.setLEDColors(0, 255, 0);
+      break;
+    case 'd':
+      led_controller.setLEDColors(0, 0, 255);
+      break;
+    default:
+      led_controller.setLEDColors(255, 0, 255);
+      break;
+  }
+
+  return 1;
 }
 
 int main(void) {
