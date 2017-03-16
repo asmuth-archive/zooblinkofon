@@ -30,6 +30,9 @@ uint16_t execute_command(const char* data, uint16_t len) {
     case 'd':
       led_controller.setLEDColors(0, 0, 255);
       break;
+    case 'w':
+      led_controller.setLEDColors(255, 255, 255);
+      break;
     default:
       led_controller.setLEDColors(255, 0, 255);
       break;
