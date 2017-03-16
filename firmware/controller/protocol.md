@@ -12,14 +12,16 @@ Messages that may be sent (i.e. written to the uart) by a user:
 
     0x80 <rgb_data>
 
-where rgb data is 3 bytes per led (r/g/b). the interval of valid values for each
-colors brightness is [0-128), not [0-256)
+where `rgb_data` is 3 bytes per led (r/g/b). the interval of valid values for each
+colors brightness is [0-128), not [0-256). for example, the string
+`\x80\x7a\x00\x00\x60\x60\x60\x00\x00\x7a` would set the first three leds to
+red, white and blue.
 
 ### set button lights on/off
 
     0x81 <bool_data>
 
-where bool data is 1 bit per button, but only the lower 7 bits of each byte are
+where `bool_data` is 1 bit per button, but only the lower 7 bits of each byte are
 used (the highest bit must always be zero)
 
 

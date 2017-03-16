@@ -1,7 +1,7 @@
 TARGET_CPU     = atmega328p
 TARGET_CPUFREQ = 16000000UL
 
-SOURCES = firmware.cc serial.cc led_controller.cc
+SOURCES = firmware.cc serial.cc led_controller.cc protocol.cc
 OBJECTS = $(SOURCES:.cc=.o)
 
 all: firmware.hex
@@ -19,6 +19,6 @@ flash: all
 	avrdude -c usbasp -p m328p -B 5 -U flash:w:firmware.hex
 
 clean:
-	rm firmware.bin firmware.hex *.o **/*.o
+	rm -rf firmware.bin firmware.hex *.o **/*.o
 
 .PHONY: clean
