@@ -8,9 +8,9 @@ namespace iot9000 {
 namespace avr {
 
 SerialPort::SerialPort() : rxcb_(nullptr), txbuf_len_(0) {
-  // set hardware registers for serial console
-  UBRR0L = (((F_CPU / (kClockBaud * 16UL))) - 1);
-  UBRR0H = (((F_CPU / (kClockBaud * 16UL))) - 1) >> 8;
+  // set hardware registers for 250k baud
+  UBRR0L = 3;
+  UBRR0H = 0;
   UCSR0B = (1 << TXEN0) | (1 << RXEN0) | (1 << RXCIE0);
 }
 
@@ -26,15 +26,15 @@ uint16_t SerialPort::sendNonblock(const char* data, uint16_t len) {
 }
 
 void SerialPort::handleInterrupt() {
-  char c = UDR0;
-
   cli();
 
-  if (rxcb_) {
-    rxcb_(c);
-  }
+  if (UCSR0A & (1 << RXC0)) {
+    char c = UDR0;
 
-exit:
+    if (rxcb_) {
+      rxcb_(c);
+    }
+  }
 
   sei();
 }

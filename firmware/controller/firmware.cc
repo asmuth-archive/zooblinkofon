@@ -16,10 +16,6 @@ ISR(USART_RX_vect) {
   serial_port.handleInterrupt();
 }
 
-ISR(TIMER0_OVF_vect) {
-  led_controller.refreshDisplay();
-}
-
 void recv_data(char data) {
   protocol_reader.nextByte(data);
 
@@ -30,38 +26,65 @@ void recv_data(char data) {
     case ProtocolReader::S_LED_DATA:
       led_controller.setNextLEDColor(uint8_t(data) << 1);
       break;
+    case ProtocolReader::S_BUTTON_BEGIN:
+      break;
   }
 }
 
+void magenta();
 int main(void) {
   sei(); // enable interrupts
 
-  // enable timer interrupt
-  TIMSK0 = (1 << TOIE0);
-  TCNT0 = 0x00;
-  TCCR0B |= (1 << CS02) | (1 << CS00);
-
+  led_controller.setLEDColors(0, 0, 0);
   serial_port.setReceiveCallback(&recv_data);
+  led_controller.refreshDisplay();
 
-  for (;;) {}
+  for (;;) {
+    led_controller.refreshDisplay();
+    _delay_ms(10);
+  }
 }
 
-//void colorfade() {
-//  DDRC = 1; // pin 0 is output, everything else input
-//
-//  const size_t kLedCount = 32;
-//  const double kFadeSpeed = 160;
-//
-//  uint16_t j = 0;
-//  struct cRGB led[kLedCount];
-//  for (;; ++j) {
-//    for (size_t i = 0; i < kLedCount; ++i) {
-//      led[i].r = 170 + sin(j / kFadeSpeed) * 85;
-//      led[i].g = 0;
-//      led[i].b = 170 + sin(j / kFadeSpeed + M_PI) * 75;
-//    }
-//
-//    ws2812_setleds(led, kLedCount);
-//    _delay_ms(1);
-//  }
-//}
+void magenta() {
+  DDRC = 1; // pin 0 is output, everything else input
+
+  const size_t kLedCount = 32;
+  const double kFadeSpeed = 160;
+
+  uint16_t j = 0;
+  for (;; ++j) {
+    for (size_t i = 0; i < kLedCount; ++i) {
+      led_controller.setLEDColor(
+          i,
+          170 + sin(j / kFadeSpeed) * 85,
+          0,
+          170 + sin(j / kFadeSpeed + M_PI) * 75);
+    }
+
+    led_controller.refreshDisplay();
+
+    //_delay_ms(1);
+  }
+}
+
+void police() {
+  DDRC = 1; // pin 0 is output, everything else input
+
+  const size_t kLedCount = 32;
+  const double kFadeSpeed = 10;
+
+  uint16_t j = 0;
+  for (;; ++j) {
+    for (size_t i = 0; i < kLedCount; ++i) {
+      led_controller.setLEDColor(
+          i,
+          128 + sin(j / kFadeSpeed) * 128,
+          0,
+          128 + sin(j / kFadeSpeed + M_PI / 2) * 128);
+    }
+
+    led_controller.refreshDisplay();
+
+    _delay_ms(1);
+  }
+}

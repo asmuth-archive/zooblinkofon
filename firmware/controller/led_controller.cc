@@ -54,9 +54,7 @@ void LEDController::setNextLEDColor(uint8_t val) {
 }
 
 void LEDController::refreshDisplay() {
-  cli(); // disable interrupts
   ws2812_setleds(led_state_, kLEDCount);
-  sei(); // enable interrupts
 }
 
 } // namespace avr

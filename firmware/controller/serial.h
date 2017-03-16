@@ -9,7 +9,7 @@ public:
 
   using ReceiveCallbackType = void (*)(char data);
 
-  static const uint32_t kClockBaud = 38400;
+  static const uint32_t kClockBaud = 38400 * 8;
   static const uint16_t kTransmitBufferSize = 32;
 
   SerialPort();
