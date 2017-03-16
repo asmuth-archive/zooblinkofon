@@ -12,7 +12,7 @@ and whistles, such as connecting to you Wifi network and running a number of
 trivial apps:
 
    - Animal sound board
-   - Generic soundboard/lightboard
+   - Adult sound board
    - Health check monitoring
    - Stroboscope
-   - Machine to Machine communication
+   - Machine to Machine (M2M) communication
