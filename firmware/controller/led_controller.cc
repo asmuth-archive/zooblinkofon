@@ -54,7 +54,9 @@ void LEDController::setNextLEDColor(uint8_t val) {
 }
 
 void LEDController::refreshDisplay() {
+  cli();
   ws2812_setleds(led_state_, kLEDCount);
+  sei();
 }
 
 } // namespace avr

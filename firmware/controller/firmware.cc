@@ -41,7 +41,7 @@ int main(void) {
 
   for (;;) {
     led_controller.refreshDisplay();
-    _delay_ms(10);
+    _delay_ms(16);
   }
 }
 

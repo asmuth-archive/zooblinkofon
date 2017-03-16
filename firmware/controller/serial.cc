@@ -26,8 +26,6 @@ uint16_t SerialPort::sendNonblock(const char* data, uint16_t len) {
 }
 
 void SerialPort::handleInterrupt() {
-  cli();
-
   if (UCSR0A & (1 << RXC0)) {
     char c = UDR0;
 
@@ -35,8 +33,6 @@ void SerialPort::handleInterrupt() {
       rxcb_(c);
     }
   }
-
-  sei();
 }
 
 void SerialPort::setReceiveCallback(ReceiveCallbackType cb) {
