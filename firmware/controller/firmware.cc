@@ -31,7 +31,6 @@ void recv_data(char data) {
   }
 }
 
-void magenta();
 int main(void) {
   sei(); // enable interrupts
 
@@ -45,46 +44,3 @@ int main(void) {
   }
 }
 
-void magenta() {
-  DDRC = 1; // pin 0 is output, everything else input
-
-  const size_t kLedCount = 32;
-  const double kFadeSpeed = 160;
-
-  uint16_t j = 0;
-  for (;; ++j) {
-    for (size_t i = 0; i < kLedCount; ++i) {
-      led_controller.setLEDColor(
-          i,
-          170 + sin(j / kFadeSpeed) * 85,
-          0,
-          170 + sin(j / kFadeSpeed + M_PI) * 75);
-    }
-
-    led_controller.refreshDisplay();
-
-    //_delay_ms(1);
-  }
-}
-
-void police() {
-  DDRC = 1; // pin 0 is output, everything else input
-
-  const size_t kLedCount = 32;
-  const double kFadeSpeed = 10;
-
-  uint16_t j = 0;
-  for (;; ++j) {
-    for (size_t i = 0; i < kLedCount; ++i) {
-      led_controller.setLEDColor(
-          i,
-          128 + sin(j / kFadeSpeed) * 128,
-          0,
-          128 + sin(j / kFadeSpeed + M_PI / 2) * 128);
-    }
-
-    led_controller.refreshDisplay();
-
-    _delay_ms(1);
-  }
-}
