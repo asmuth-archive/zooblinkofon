@@ -13,7 +13,7 @@ struct __attribute__((packed)) LEDState {
 class LEDController {
 public:
 
-  static const uint16_t kLEDCount = 64;
+  static const uint16_t kLEDCount = 128;
 
   LEDController();
 
