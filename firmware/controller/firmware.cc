@@ -34,7 +34,7 @@ void recv_data(char data) {
 int main(void) {
   sei(); // enable interrupts
 
-  led_controller.setLEDColors(0, 0, 0);
+  led_controller.setLEDColors(255, 0, 0);
   serial_port.setReceiveCallback(&recv_data);
   led_controller.refreshDisplay();
 
