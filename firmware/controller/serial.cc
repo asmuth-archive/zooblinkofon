@@ -7,39 +7,55 @@
 namespace iot9000 {
 namespace avr {
 
-SerialPort::SerialPort() : rxcb_(nullptr), txbuf_len_(0) {
-  // set hardware registers for 19200 baud
-  UBRR0L = 0x03;
+SerialPort::SerialPort() {
+  UBRR0L = 0x19;
   UBRR0H = 0;
-  UCSR0B = (1 << TXEN0) | (1 << RXEN0) | (1 << RXCIE0);
+	UCSR0B = (1 << RXEN0);
+	UCSR0C = (3 << UCSZ00);
 }
 
-uint16_t SerialPort::sendNonblock(const char* data, uint16_t len) {
-  uint16_t bytes_sent = 0;
-
-  while (bytes_sent < len && (UCSR0A & (1 << UDRE0))) {
-    UDR0 = *data++;
-    ++bytes_sent;
-  }
-
-  return bytes_sent;
-}
-
-void SerialPort::handleInterrupt() {
-  if (UCSR0A & (1 << RXC0)) {
-    char c = UDR0;
-
-    if (rxcb_) {
-      rxcb_(c);
+uint8_t SerialPort::recvBlock() {
+	for (;;) {
+    uint8_t byte;
+    if (recvNonblock(&byte)) {
+      return byte;
     }
   }
 }
 
-void SerialPort::setReceiveCallback(ReceiveCallbackType cb) {
-  rxcb_ = cb;
+bool SerialPort::recvNonblock(uint8_t* byte) {
+  if (hasPendingData()) {
+    *byte = UDR0;
+    return true;
+  } else {
+    return false;
+  }
+}
+
+bool SerialPort::hasPendingData() const {
+  return UCSR0A & (1 << RXC0);
+}
+
+bool SerialPort::receivePacket(uint8_t* pkt) {
+  uint8_t buf[SerialPort::kPacketLength];
+  memset(buf, 0, sizeof(buf));
+
+  for (uint8_t i = 0; ; ++i) {
+    auto off = i % sizeof(buf);
+    buf[off] = recvBlock();
+ 
+    memcpy(pkt, buf + off, sizeof(buf) - off);
+    memcpy(pkt + off, buf, off);
+
+    if (verifyPacket(pkt)) {
+      break;
+    }
+  }
+}
+
+bool SerialPort::verifyPacket(const uint8_t* pkt) {
+  return pkt[6] == 0x42;
 }
 
 } // namespace avr
 } // namespace iot9000
-
-

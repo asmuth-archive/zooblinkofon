@@ -4,17 +4,18 @@ import time
 import struct
 import math
 
-s = serial.Serial('/dev/ttyUSB0', 250000)
+s = serial.Serial('/dev/ttyUSB0', 38400)
 
 def set_color(r,g,b):
-  pkt="\x80"
+  pkt=""
   for i in range(0, 32):
     pkt += struct.pack("BBB", r / 2, g / 2, b / 2)
+  pkt+="\xff"
   s.write(pkt)
 
 j = 0
-speed = 24.0
+speed = 2.0
 while True:
   j = j + 1
   set_color(170 + math.sin(j / speed) * 85, 0, 170 + math.sin(j / speed + math.pi) * 75);
-  time.sleep(0.016)
+  time.sleep(0.033)

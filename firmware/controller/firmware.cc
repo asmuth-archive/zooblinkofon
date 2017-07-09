@@ -3,6 +3,7 @@
 #include <util/delay.h>
 #include <avr/interrupt.h>
 #include "serial.h"
+#include "string.h"
 #include "led_controller.h"
 #include "protocol.h"
 
@@ -10,11 +11,6 @@ using namespace iot9000::avr;
 
 SerialPort serial_port;
 LEDController led_controller;
-ProtocolReader protocol_reader;
-
-ISR(USART_RX_vect) {
-  serial_port.handleInterrupt();
-}
 
 void bootanim() {
   for (uint8_t n = 0; n < 5; n++) {
@@ -39,8 +35,17 @@ void bootanim() {
     }
   }
 
-  for (;;) {
+  led_controller.setAmbientColour(0, 0, 0);
+  led_controller.refreshDisplay();
+}
+
+void idleanim() {
+  while (!serial_port.hasPendingData()) {
     for (uint8_t n = 0; n < 5; n++) {
+      if (serial_port.hasPendingData()) {
+        break;
+      }
+
       led_controller.setButton(4 - n, 0);
       led_controller.setButton((4 - n) + 5, 0);
       led_controller.refreshDisplay();
@@ -48,6 +53,10 @@ void bootanim() {
     }
 
     for (uint8_t n = 0; n < 5; n++) {
+      if (serial_port.hasPendingData()) {
+        break;
+      }
+
       led_controller.setButton(4 - n, 1);
       led_controller.setButton((4 - n) + 5, 1);
       led_controller.refreshDisplay();
@@ -58,6 +67,13 @@ void bootanim() {
 
 int main(void) {
   bootanim();
+  idleanim();
+
+  uint8_t pkt[SerialPort::kPacketLength];
+  serial_port.receivePacket(pkt);
+  
+  led_controller.setAmbientColour(255, 0, 0);
+  led_controller.refreshDisplay();
 
   return 0;
 }

@@ -7,11 +7,11 @@ import sys
 
 def send_color(r,g,b):
   pkt=b'\x80'
-  for i in range(0, 32):
+  for i in range(0, 1):
     pkt += struct.pack("BBB", int(r / 2), int(g / 2), int(b / 2))
   s.write(pkt)
 
-s = serial.Serial('/dev/ttyUSB0', 250000)
+s = serial.Serial('/dev/ttyUSB0', 19200)
 send_color(0, 0, 0)
 
 app = QtWidgets.QApplication(sys.argv)

@@ -7,24 +7,18 @@ namespace avr {
 class SerialPort {
 public:
 
-  using ReceiveCallbackType = void (*)(char data);
-
-  static const uint32_t kClockBaud = 38400 * 8;
-  static const uint16_t kTransmitBufferSize = 32;
+  static const uint8_t kPacketLength = 7;
 
   SerialPort();
 
-  uint16_t sendNonblock(const char* data, uint16_t len);
+  uint8_t recvBlock();
+  bool recvNonblock(uint8_t* byte);
+  bool hasPendingData() const;
 
-  void setReceiveCallback(ReceiveCallbackType rxcb);
-  void handleInterrupt();
+  bool receivePacket(uint8_t* pkt);
+  bool verifyPacket(const uint8_t* pkt);
 
-protected:
-  ReceiveCallbackType rxcb_;
-  char txbuf_[kTransmitBufferSize];
-  uint16_t txbuf_len_;
 };
 
 } // namespace avr
 } // namespace iot9000
-
