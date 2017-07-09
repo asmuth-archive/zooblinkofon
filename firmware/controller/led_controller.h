@@ -4,7 +4,7 @@
 namespace iot9000 {
 namespace avr {
 
-struct __attribute__((packed)) LEDState {
+struct __attribute__((packed)) Colour {
   uint8_t g;
   uint8_t r;
   uint8_t b;
@@ -13,29 +13,24 @@ struct __attribute__((packed)) LEDState {
 class LEDController {
 public:
 
-  static const uint16_t kLEDCount = 128;
+  static const uint16_t kLEDCount = 32;
 
   LEDController();
 
-  void setLEDColors(
+  void setAmbientColour(
       uint8_t red,
       uint8_t green,
       uint8_t blue);
 
-  void setLEDColor(
-      uint16_t led_idx,
-      uint8_t red,
-      uint8_t green,
-      uint8_t blue);
+  void setAmbientColour(const Colour& c);
 
-  void beginLEDColors();
-  void setNextLEDColor(uint8_t val);
+  //void beginLEDColors();
+  //void setNextLEDColor(uint8_t val);
 
   void refreshDisplay();
 
 protected:
-  LEDState led_state_[kLEDCount];
-  uint16_t cur_;
+  Colour ambient_;
 };
 
 } // namespace avr

@@ -16,7 +16,7 @@ firmware.hex: firmware.bin
 	avr-objcopy -O ihex -R .eeprom firmware.bin firmware.hex
 
 flash: all
-	avrdude -c usbasp -p m328p -B 5 -U flash:w:firmware.hex
+	avrdude -c usbasp -p m328p -U flash:w:firmware.hex
 
 clean:
 	rm -rf firmware.bin firmware.hex *.o **/*.o

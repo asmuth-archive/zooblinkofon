@@ -17,30 +17,50 @@ ISR(USART_RX_vect) {
 }
 
 void recv_data(char data) {
-  protocol_reader.nextByte(data);
+}
 
-  switch (protocol_reader.getState()) {
-    case ProtocolReader::S_LED_BEGIN:
-      led_controller.beginLEDColors();
-      break;
-    case ProtocolReader::S_LED_DATA:
-      led_controller.setNextLEDColor(uint8_t(data) << 1);
-      break;
-    case ProtocolReader::S_BUTTON_BEGIN:
-      break;
+#define PDATA 2
+#define PCLCK 3
+#define PLTCH 4
+
+void setp(int p, int s) {
+  if (s) {
+    PORTD |= (1 << p);
+  } else {
+    PORTD &= ~(1 << p);
+  }
+}
+
+void blink() {
+  for (int i = 0; i < 16; ++i) {
+    setp(PLTCH, 0);
+
+    for (size_t n = 0; n < 16; ++n) {
+      setp(PCLCK, 0);
+      setp(PDATA, i % 16 == n);
+      _delay_ms(10);
+      setp(PCLCK, 1);
+      led_controller.refreshDisplay();
+    }
+
+    setp(PLTCH, 1);
   }
 }
 
 int main(void) {
-  sei(); // enable interrupts
-
-  led_controller.setLEDColors(255, 0, 0);
-  serial_port.setReceiveCallback(&recv_data);
-  led_controller.refreshDisplay();
+  DDRD |= 1 << PDATA;
+  DDRD |= 1 << PCLCK;
+  DDRD |= 1 << PLTCH;
 
   for (;;) {
+    led_controller.setAmbientColour(255, 0, 0);
     led_controller.refreshDisplay();
-    _delay_ms(16);
+    blink();
+    led_controller.setAmbientColour(0, 0, 0);
+    led_controller.refreshDisplay();
+    _delay_ms(100);
   }
+
+  return 0;
 }
 

@@ -8,8 +8,8 @@ namespace iot9000 {
 namespace avr {
 
 SerialPort::SerialPort() : rxcb_(nullptr), txbuf_len_(0) {
-  // set hardware registers for 250k baud
-  UBRR0L = 3;
+  // set hardware registers for 19200 baud
+  UBRR0L = 0x03;
   UBRR0H = 0;
   UCSR0B = (1 << TXEN0) | (1 << RXEN0) | (1 << RXCIE0);
 }
