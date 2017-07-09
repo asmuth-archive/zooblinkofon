@@ -13,24 +13,28 @@ struct __attribute__((packed)) Colour {
 class LEDController {
 public:
 
-  static const uint16_t kLEDCount = 32;
+  using ButtonRegisterType = uint16_t;
+  static const uint8_t kButtonCount = sizeof(ButtonRegisterType) * 8;
+  static const uint8_t kButtonDataPin = 2;
+  static const uint8_t kButtonClockPin = 3;
+  static const uint8_t kButtonLatchPin = 4;
+  static const uint8_t kButtonMap[kButtonCount];
 
   LEDController();
 
+  void setButton(uint8_t index, bool state);
+
+  void setAmbientColour(const Colour& c);
   void setAmbientColour(
       uint8_t red,
       uint8_t green,
       uint8_t blue);
 
-  void setAmbientColour(const Colour& c);
-
-  //void beginLEDColors();
-  //void setNextLEDColor(uint8_t val);
-
   void refreshDisplay();
 
 protected:
   Colour ambient_;
+  ButtonRegisterType buttons_;
 };
 
 } // namespace avr

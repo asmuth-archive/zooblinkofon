@@ -16,49 +16,16 @@ ISR(USART_RX_vect) {
   serial_port.handleInterrupt();
 }
 
-void recv_data(char data) {
-}
-
-#define PDATA 2
-#define PCLCK 3
-#define PLTCH 4
-
-void setp(int p, int s) {
-  if (s) {
-    PORTD |= (1 << p);
-  } else {
-    PORTD &= ~(1 << p);
-  }
-}
-
-void blink() {
-  for (int i = 0; i < 16; ++i) {
-    setp(PLTCH, 0);
-
-    for (size_t n = 0; n < 16; ++n) {
-      setp(PCLCK, 0);
-      setp(PDATA, i % 16 == n);
-      _delay_ms(10);
-      setp(PCLCK, 1);
-      led_controller.refreshDisplay();
+int main(void) {
+  for (uint32_t n = 0; ; n++) {
+    for (uint32_t i = 0; i < 16; i++) {
+      led_controller.setButton(i, i == (n % 10));
     }
 
-    setp(PLTCH, 1);
-  }
-}
-
-int main(void) {
-  DDRD |= 1 << PDATA;
-  DDRD |= 1 << PCLCK;
-  DDRD |= 1 << PLTCH;
-
-  for (;;) {
-    led_controller.setAmbientColour(255, 0, 0);
+    auto b = (n % 2) * 30;
+    led_controller.setAmbientColour(b, b, b);
     led_controller.refreshDisplay();
-    blink();
-    led_controller.setAmbientColour(0, 0, 0);
-    led_controller.refreshDisplay();
-    _delay_ms(100);
+    _delay_ms(200);
   }
 
   return 0;
