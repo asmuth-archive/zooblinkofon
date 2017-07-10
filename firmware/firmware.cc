@@ -5,7 +5,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
 #include "input.h"
-#include "audio_mixer.h"
+#include "audio.h"
 
 using namespace zooblinkofon;
 

@@ -1,5 +1,5 @@
 #include <iostream>
-#include "audio_mixer.h"
+#include "audio.h"
 
 namespace zooblinkofon {
 

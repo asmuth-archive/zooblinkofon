@@ -22,8 +22,8 @@ AM_CXXFLAGS = \
 bin_PROGRAMS = zbf-firmware
 
 zbf_firmware_SOURCES = \
-    audio_mixer.h \
-    audio_mixer.cc \
+    audio.h \
+    audio.cc \
     input.h \
     input.cc \
     firmware.cc
