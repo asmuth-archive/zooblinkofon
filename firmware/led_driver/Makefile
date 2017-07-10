@@ -1,7 +1,7 @@
 TARGET_CPU     = atmega328p
 TARGET_CPUFREQ = 16000000UL
 
-SOURCES = firmware.cc serial.cc led_controller.cc protocol.cc
+SOURCES = firmware.cc serial.cc driver.cc
 OBJECTS = $(SOURCES:.cc=.o)
 
 all: firmware.hex

@@ -1,11 +1,8 @@
 #include <stdlib.h>
-#include <avr/io.h>
+#include <string.h>
 #include <util/delay.h>
-#include <avr/interrupt.h>
 #include "serial.h"
-#include "string.h"
-#include "led_controller.h"
-#include "protocol.h"
+#include "driver.h"
 
 using namespace iot9000::avr;
 
