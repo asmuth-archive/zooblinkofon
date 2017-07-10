@@ -14,8 +14,18 @@ SerialPort::SerialPort() {
 	UCSR0C = (3 << UCSZ00);
 }
 
-bool SerialPort::recvBlock(uint8_t* byte, uint32_t timeout /* = 500 */) {
-  for (uint32_t i = 0; i < timeout * (F_CPU / 16384); ++i) {
+bool SerialPort::recvPacket(uint8_t* pkt, uint16_t len) {
+  for (uint8_t i = 0; i < len; ++i) {
+    if (!recv(&pkt[i])) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+bool SerialPort::recv(uint8_t* byte) {
+  for (uint32_t i = 0; i < F_CPU / 16384; ++i) {
     if (UCSR0A & (1 << RXC0)) {
       *byte = UDR0;
       return true;
@@ -42,23 +52,6 @@ void SerialPort::wait(uint32_t t) const {
   for (uint32_t i = 0; i < t * (F_CPU / 16384) && !(UCSR0A & (1 << RXC0)); ++i);
 }
 
-bool SerialPort::receivePacket(uint8_t* pkt) {
-  for (;;) {
-    for (uint8_t i = 0; i < kPacketLength; ++i) {
-      if (!recvBlock(&pkt[i])) {
-        return false;
-      }
-    }
-
-    if (verifyPacket(pkt)) {
-      return true;
-    }
-  }
-}
-
-bool SerialPort::verifyPacket(const uint8_t* pkt) {
-  return pkt[7] == 0x42;
-}
-
 } // namespace avr
 } // namespace iot9000
+

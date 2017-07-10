@@ -6,6 +6,8 @@
 
 using namespace iot9000::avr;
 
+static const uint8_t kPacketLength = 5;
+
 SerialPort serial_port;
 LEDController led_controller;
 
@@ -82,13 +84,12 @@ int main(void) {
   for (;;) {
     idleanim();
 
-    for (;;) {
-      uint8_t pkt[SerialPort::kPacketLength];
-      if (!serial_port.receivePacket(pkt)) {
-        break;
+    for (uint32_t timeout = 0; timeout < (F_CPU / 8192); ++timeout) {
+      uint8_t pkt[kPacketLength];
+      if (serial_port.recvPacket(pkt, sizeof(pkt))) {
+        update(pkt);
+        timeout = 0;
       }
-
-      update(pkt);
     }
   }
 
