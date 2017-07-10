@@ -22,7 +22,6 @@ public:
 
   LEDController();
 
-  void setButtons(ButtonRegisterType r);
   void setButton(uint8_t index, bool state);
 
   void setAmbientColour(const Colour& c);
@@ -32,6 +31,7 @@ public:
       uint8_t blue);
 
   void refreshDisplay();
+  void clear();
 
 protected:
   Colour ambient_;

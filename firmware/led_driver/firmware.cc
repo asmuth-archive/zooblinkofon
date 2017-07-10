@@ -12,9 +12,7 @@ SerialPort serial_port;
 LEDController led_controller;
 
 void bootanim() {
-  led_controller.setAmbientColour(0, 0, 0);
-  led_controller.setButtons(0);
-  led_controller.refreshDisplay();
+  led_controller.clear();
 
   for (uint8_t n = 0; n < 5; n++) {
     led_controller.setButton(4 - n, 1);
@@ -43,9 +41,7 @@ void bootanim() {
 }
 
 void idleanim() {
-  led_controller.setAmbientColour(0, 0, 0);
-  led_controller.setButtons(0);
-  led_controller.refreshDisplay();
+  led_controller.clear();
 
   while (!serial_port.hasPendingData()) {
     for (uint8_t n = 0; n < 5; n++) {
@@ -73,8 +69,18 @@ void idleanim() {
 }
 
 void update(uint8_t* pkt) {
+  auto buttons = uint16_t(pkt[3]) | (uint16_t(pkt[4]) << 8);
+  led_controller.setButton(0, buttons & (1 << 0));
+  led_controller.setButton(1, buttons & (1 << 1));
+  led_controller.setButton(2, buttons & (1 << 2));
+  led_controller.setButton(3, buttons & (1 << 3));
+  led_controller.setButton(4, buttons & (1 << 4));
+  led_controller.setButton(5, buttons & (1 << 5));
+  led_controller.setButton(6, buttons & (1 << 6));
+  led_controller.setButton(7, buttons & (1 << 7));
+  led_controller.setButton(8, buttons & (1 << 8));
+  led_controller.setButton(9, buttons & (1 << 9));
   led_controller.setAmbientColour(pkt[0], pkt[1], pkt[2]);
-  led_controller.setButtons(uint16_t(pkt[3]) | (uint16_t(pkt[4]) << 8));
   led_controller.refreshDisplay();
 }
 
