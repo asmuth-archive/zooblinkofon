@@ -24,7 +24,9 @@ bin_PROGRAMS = zbf-firmware
 zbf_firmware_SOURCES = \
     audio_mixer.h \
     audio_mixer.cc \
+    input.h \
+    input.cc \
     firmware.cc
 
-zbf_firmware_LDADD = -lSDL -lSDL_mixer
+zbf_firmware_LDADD = -lSDL -lSDL_mixer -lncurses
 
