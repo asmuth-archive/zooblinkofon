@@ -4,8 +4,6 @@ AUTOMAKE_OPTIONS = foreign
 AM_CXXFLAGS = \
     -std=c++14 \
     -ftemplate-depth=500 \
-    -mno-omit-leaf-frame-pointer \
-    -fno-omit-frame-pointer \
     -g \
     -Wall \
     -Wextra \
@@ -28,5 +26,6 @@ zbf_firmware_SOURCES = \
     input.cc \
     firmware.cc
 
-zbf_firmware_LDADD = -lSDL -lSDL_mixer -lncurses
+zbf_firmware_LDFLAGS = -static-libgcc -static-libstdc++
+zbf_firmware_LDADD = -lSDL2 -lSDL2_mixer
 

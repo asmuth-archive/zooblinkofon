@@ -13,7 +13,7 @@ int main() {
   InputHandler input;
 
   AudioMixer audio;
-  if (!audio.loadSample("notify", "media/notify.wav")) {
+  if (!audio.loadSample("notify", "/usr/share/zbf-firmware/media/notify.wav")) {
     std::cerr << "ERROR: error while loading sample" << std::endl;
     return 1;
   }
