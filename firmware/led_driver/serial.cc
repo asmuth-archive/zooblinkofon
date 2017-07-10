@@ -14,13 +14,15 @@ SerialPort::SerialPort() {
 	UCSR0C = (3 << UCSZ00);
 }
 
-uint8_t SerialPort::recvBlock() {
-	for (;;) {
-    uint8_t byte;
-    if (recvNonblock(&byte)) {
-      return byte;
+bool SerialPort::recvBlock(uint8_t* byte, uint32_t timeout /* = 500 */) {
+  for (uint32_t i = 0; i < timeout * (F_CPU / 16384); ++i) {
+    if (UCSR0A & (1 << RXC0)) {
+      *byte = UDR0;
+      return true;
     }
   }
+
+  return false;
 }
 
 bool SerialPort::recvNonblock(uint8_t* byte) {
@@ -36,25 +38,26 @@ bool SerialPort::hasPendingData() const {
   return UCSR0A & (1 << RXC0);
 }
 
-bool SerialPort::receivePacket(uint8_t* pkt) {
-  uint8_t buf[SerialPort::kPacketLength];
-  memset(buf, 0, sizeof(buf));
+void SerialPort::wait(uint32_t t) const {
+  for (uint32_t i = 0; i < t * (F_CPU / 16384) && !(UCSR0A & (1 << RXC0)); ++i);
+}
 
-  for (uint8_t i = 0; ; ++i) {
-    auto off = i % sizeof(buf);
-    buf[off] = recvBlock();
- 
-    memcpy(pkt, buf + off, sizeof(buf) - off);
-    memcpy(pkt + off, buf, off);
+bool SerialPort::receivePacket(uint8_t* pkt) {
+  for (;;) {
+    for (uint8_t i = 0; i < kPacketLength; ++i) {
+      if (!recvBlock(&pkt[i])) {
+        return false;
+      }
+    }
 
     if (verifyPacket(pkt)) {
-      break;
+      return true;
     }
   }
 }
 
 bool SerialPort::verifyPacket(const uint8_t* pkt) {
-  return pkt[6] == 0x42;
+  return pkt[7] == 0x42;
 }
 
 } // namespace avr

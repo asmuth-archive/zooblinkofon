@@ -27,6 +27,10 @@ LEDController::LEDController() : buttons_(0) {
   DDRD |= 1 << kButtonLatchPin;
 }
 
+void LEDController::setButtons(ButtonRegisterType r) {
+  buttons_ = r;
+}
+
 void LEDController::setButton(uint8_t index, bool state) {
   if (state) {
     buttons_ |= 1 << kButtonMap[index];
