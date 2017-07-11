@@ -10,8 +10,8 @@ namespace avr {
 SerialPort::SerialPort() {
   UBRR0L = 0x19;
   UBRR0H = 0;
-	UCSR0B = (1 << RXEN0);
-	UCSR0C = (3 << UCSZ00);
+  UCSR0B = (1 << RXEN0);
+  UCSR0C = (3 << UCSZ00);
 }
 
 bool SerialPort::recvPacket(uint8_t* pkt, uint16_t len) {
