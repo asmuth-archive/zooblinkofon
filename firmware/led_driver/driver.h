@@ -10,7 +10,7 @@ struct __attribute__((packed)) Colour {
   uint8_t b;
 };
 
-class LEDController {
+class LEDDriver {
 public:
 
   using ButtonRegisterType = uint16_t;
@@ -20,7 +20,7 @@ public:
   static const uint8_t kButtonLatchPin = 4;
   static const uint8_t kButtonMap[kButtonCount];
 
-  LEDController();
+  LEDDriver();
 
   void setButton(uint8_t index, bool state);
 

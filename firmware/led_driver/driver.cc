@@ -4,7 +4,7 @@
 namespace iot9000 {
 namespace avr {
 
-const uint8_t LEDController::kButtonMap[] = {
+const uint8_t LEDDriver::kButtonMap[] = {
   6,
   4,
   2,
@@ -17,7 +17,7 @@ const uint8_t LEDController::kButtonMap[] = {
   13
 };
 
-LEDController::LEDController() : buttons_(0) {
+LEDDriver::LEDDriver() : buttons_(0) {
   ambient_.r = 0;
   ambient_.g = 0;
   ambient_.b = 0;
@@ -27,7 +27,7 @@ LEDController::LEDController() : buttons_(0) {
   DDRD |= 1 << kButtonLatchPin;
 }
 
-void LEDController::setButton(uint8_t index, bool state) {
+void LEDDriver::setButton(uint8_t index, bool state) {
   if (state) {
     buttons_ |= 1 << kButtonMap[index];
   } else {
@@ -35,11 +35,11 @@ void LEDController::setButton(uint8_t index, bool state) {
   }
 }
 
-void LEDController::setAmbientColour(const Colour& c) {
+void LEDDriver::setAmbientColour(const Colour& c) {
   ambient_ = c;
 }
 
-void LEDController::setAmbientColour(
+void LEDDriver::setAmbientColour(
     uint8_t red,
     uint8_t green,
     uint8_t blue) {
@@ -59,7 +59,7 @@ static void setp(int p, int s) {
   }
 }
 
-void LEDController::refreshDisplay() {
+void LEDDriver::refreshDisplay() {
   // write ws2812 data
   cli();
   ws2812_setleds(&ambient_, 32);
@@ -79,7 +79,7 @@ void LEDController::refreshDisplay() {
   setp(kButtonLatchPin, 1);
 }
 
-void LEDController::clear() {
+void LEDDriver::clear() {
   buttons_ = 0;
   setAmbientColour(0, 0, 0);
   refreshDisplay();
