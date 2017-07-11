@@ -61,6 +61,8 @@ void InputHandler::pollInputs(std::list<InputEvent>* events) {
       case '0':
         btn = 9;
         break;
+      case 'q':
+        exit(0);
       default:
         continue;
     }

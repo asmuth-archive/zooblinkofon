@@ -4,11 +4,6 @@
 namespace zooblinkofon {
 
 AudioMixer::AudioMixer() {
-  if (SDL_Init(SDL_INIT_AUDIO) != 0) {
-    std::cerr << "ERROR: SDL_Init() failed" << std::endl;
-    exit(1);
-  }
-
   if (Mix_OpenAudio(22050, AUDIO_S16SYS, 1, 4096) != 0) {
     std::cerr << "ERROR: Mix_OpenAUdio() failed" << std::endl;
     exit(1);
@@ -48,7 +43,6 @@ AudioMixer::~AudioMixer() {
   }
 
   Mix_CloseAudio();
-  SDL_Quit();
 }
 
 } // namespace zooblinkofon
