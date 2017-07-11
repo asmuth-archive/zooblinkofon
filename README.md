@@ -1,20 +1,34 @@
-iot9000
-=======
+Das Zooblinkofon
+================
 
-iot9000 is the latest development in useless device technology. IOT stands for
-internet of things in case you didn't know.
+### Main Firmware (x64/armhf)
 
-The current flagship model, the iot9000 Pro incorporates a shiny RGB led array,
-an integrated speaker and 16 illuminated buttons in a laser-cut birch plywood
-case.  Also check out the iot9000 Air which gives you most of the features you came
-to love from your iot9000 Pro in a more streamlined form factor (a flower pot).
+Build main firmware (for host):
 
-Of course, all iot9000 models support the usual features you would expect in a
-next-generation smart device, such as connecting to you Wifi network and running
-a number of trivial apps:
+    $ cd firmware
+    $ ./autogen.sh
+    $ ./configure
+    $ make
 
-   - Animal sound board
-   - Adult sound board
-   - Health check monitoring
-   - Stroboscope
-   - Machine to Machine (M2M) communication
+Run main firmware on host:
+
+    $ cd firmware
+    $ ./zbf-firmware
+
+
+### LED Driver (atmega328p/avr)
+
+Build LED driver firmware (cross for avr):
+
+    $ cd firmware/led_driver
+    $ make
+
+Flash LED driver to atmega328p:
+
+    $ cd firmware/led_driver
+    $ make flash
+
+Set HW fuses on atmega328p:
+
+    $ avrdude -c usbasp -p m328p -B 20 -U lfuse:w:0xff:m -U hfuse:w:0xd9:m -U efuse:w:0x07:m
+
