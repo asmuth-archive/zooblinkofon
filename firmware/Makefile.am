@@ -30,6 +30,5 @@ zbf_firmware_SOURCES = \
     monitor.cc \
     firmware.cc
 
-zbf_firmware_LDFLAGS = -static-libgcc -static-libstdc++
 zbf_firmware_LDADD = -lSDL2 -lSDL2_mixer
 
