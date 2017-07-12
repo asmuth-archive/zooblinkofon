@@ -1,16 +1,17 @@
 #pragma once
 #include <stdint.h>
 #include <array>
+#include <SDL2/SDL.h>
 
 namespace zooblinkofon {
 
-class LEDMixer {
+class DisplayState {
 public:
   using RGBType = std::array<uint8_t, 3>;
   using ButtonRegisterType = uint16_t;
   static const size_t kButtonCount = sizeof(ButtonRegisterType) * 8;
 
-  LEDMixer();
+  DisplayState();
 
   bool getButton(size_t index) const;
   void setButton(size_t index, bool state);
@@ -25,6 +26,19 @@ public:
 protected:
   std::array<bool, kButtonCount> buttons_;
   RGBType ambient_colour_;
+};
+
+class VirtualDisplay {
+public:
+
+  VirtualDisplay();
+  ~VirtualDisplay();
+
+  void render(DisplayState* state);
+
+protected:
+  SDL_Window* window_;
+  SDL_Renderer* render_;
 };
 
 } // namespace zooblinkofon

@@ -4,10 +4,9 @@
 #include <list>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
-#include "input.h"
 #include "audio.h"
-#include "leds.h"
-#include "monitor.h"
+#include "display.h"
+#include "input.h"
 
 using namespace zooblinkofon;
 
@@ -18,15 +17,14 @@ int main() {
   }
 
   InputHandler input;
-  LEDMixer leds;
+  DisplayState display;
+  VirtualDisplay virtual_display;
 
   AudioMixer audio;
   if (!audio.loadSample("notify", "media/notify.wav")) {
     std::cerr << "ERROR: error while loading sample" << std::endl;
     return 1;
   }
-
-  DebugMonitor monitor(&leds);
 
   for (size_t n = 0; ; ++n) {
     std::list<InputEvent> input_events;
@@ -39,13 +37,13 @@ int main() {
       }
     }
 
-    leds.setAmbientColour(n % 255, 0, 255 - (n % 255));
+    display.setAmbientColour(n % 255, 0, 255 - (n % 255));
 
-    for (size_t i = 0; i < LEDMixer::kButtonCount; ++i) {
-      leds.setButton(i, (n / 10) % LEDMixer::kButtonCount == i);
+    for (size_t i = 0; i < DisplayState::kButtonCount; ++i) {
+      display.setButton(i, (n / 10) % DisplayState::kButtonCount == i);
     }
 
-    monitor.refresh();
+    virtual_display.render(&display);
     usleep(20000);
   }
 

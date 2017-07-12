@@ -1,9 +1,37 @@
-#include "monitor.h"
-#include "leds.h"
+#include "display.h"
 
 namespace zooblinkofon {
 
-DebugMonitor::DebugMonitor(LEDMixer* led_mixer) : led_mixer_(led_mixer) {
+DisplayState::DisplayState() : ambient_colour_{0, 0, 0} {
+  for (size_t i = 0; i < kButtonCount; ++i) {
+    buttons_[i] = false;
+  }
+}
+
+bool DisplayState::getButton(size_t index) const {
+  return buttons_[index];
+}
+
+void DisplayState::setButton(size_t index, bool state) {
+  buttons_[index] = state;
+}
+
+const DisplayState::RGBType& DisplayState::getAmbientColour() const {
+  return ambient_colour_;
+}
+
+void DisplayState::setAmbientColour(RGBType colour) {
+  ambient_colour_ = colour;
+}
+
+void DisplayState::setAmbientColour(
+    uint8_t red,
+    uint8_t green,
+    uint8_t blue) {
+  setAmbientColour(RGBType{red, green, blue});
+}
+
+VirtualDisplay::VirtualDisplay() {
   window_ = SDL_CreateWindow(
       "the zooblinkofon debug monitor",
       SDL_WINDOWPOS_UNDEFINED,
@@ -15,12 +43,12 @@ DebugMonitor::DebugMonitor(LEDMixer* led_mixer) : led_mixer_(led_mixer) {
   render_ = SDL_CreateRenderer(window_, -1, SDL_RENDERER_ACCELERATED);
 }
 
-DebugMonitor::~DebugMonitor() {
+VirtualDisplay::~VirtualDisplay() {
   SDL_DestroyWindow(window_);
 }
 
-void DebugMonitor::refresh() {
-  auto ambient = led_mixer_->getAmbientColour();
+void VirtualDisplay::render(DisplayState* display) {
+  auto ambient = display->getAmbientColour();
   SDL_SetRenderDrawColor(render_, 42, 42, 42, 255);
   SDL_RenderClear(render_);
 
@@ -42,7 +70,7 @@ void DebugMonitor::refresh() {
     r.w = 50;
     r.h = 50;
 
-    if (led_mixer_->getButton(i)) {
+    if (display->getButton(i)) {
       SDL_SetRenderDrawColor(render_, 255, 255, 255, 255);
     } else {
       SDL_SetRenderDrawColor(render_, 60, 60, 60, 255);

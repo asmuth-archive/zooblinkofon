@@ -22,12 +22,10 @@ bin_PROGRAMS = zbf-firmware
 zbf_firmware_SOURCES = \
     audio.h \
     audio.cc \
+    display.h \
+    display.cc \
     input.h \
     input.cc \
-    leds.h \
-    leds.cc \
-    monitor.h \
-    monitor.cc \
     firmware.cc
 
 zbf_firmware_LDFLAGS = -static-libgcc -static-libstdc++
