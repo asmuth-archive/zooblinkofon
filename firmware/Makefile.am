@@ -32,6 +32,5 @@ zbf_firmware_SOURCES = \
     scene_farm.h \
     scene_farm.cc
 
-zbf_firmware_LDFLAGS = -static-libgcc -static-libstdc++
 zbf_firmware_LDADD = -lSDL2 -lSDL2_mixer
 
