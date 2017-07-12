@@ -24,9 +24,13 @@ zbf_firmware_SOURCES = \
     audio.cc \
     display.h \
     display.cc \
+    firmware.cc \
     input.h \
     input.cc \
-    firmware.cc
+    scene.h \
+    scene.cc \
+    scene_farm.h \
+    scene_farm.cc
 
 zbf_firmware_LDFLAGS = -static-libgcc -static-libstdc++
 zbf_firmware_LDADD = -lSDL2 -lSDL2_mixer

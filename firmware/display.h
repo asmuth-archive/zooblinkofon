@@ -4,6 +4,7 @@
 #include <SDL2/SDL.h>
 
 namespace zooblinkofon {
+class DisplayState;
 
 class DisplayState {
 public:

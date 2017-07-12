@@ -2,11 +2,14 @@
 #include <unistd.h>
 #include <iostream>
 #include <list>
+#include <memory>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
 #include "audio.h"
 #include "display.h"
 #include "input.h"
+#include "scene.h"
+#include "scene_farm.h"
 
 using namespace zooblinkofon;
 
@@ -16,34 +19,32 @@ int main() {
     exit(1);
   }
 
-  InputHandler input;
-  DisplayState display;
-  VirtualDisplay virtual_display;
-
   AudioMixer audio;
   if (!audio.loadSample("notify", "media/notify.wav")) {
     std::cerr << "ERROR: error while loading sample" << std::endl;
     return 1;
   }
 
+  InputHandler input;
+  DisplayState display;
+  VirtualDisplay virtual_display;
+
+  std::unique_ptr<Scene> scene(new scene_farm());;
   for (size_t n = 0; ; ++n) {
+    AnimationTime t;
+  
     std::list<InputEvent> input_events;
     input.pollInputs(&input_events);
 
     for (const auto& e : input_events) {
-      std::cerr << "EVENT: " << e.button << std::endl;
-      if (e.button == 4) {
-        audio.playSample("notify");
+      if (e.button == InputButton::QUIT) {
+        exit(0);
       }
     }
 
-    display.setAmbientColour(n % 255, 0, 255 - (n % 255));
-
-    for (size_t i = 0; i < DisplayState::kButtonCount; ++i) {
-      display.setButton(i, (n / 10) % DisplayState::kButtonCount == i);
-    }
-
+    scene->update(t, input_events, &display, &audio);
     virtual_display.render(&display);
+
     usleep(20000);
   }
 

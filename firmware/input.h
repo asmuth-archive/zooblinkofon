@@ -7,11 +7,24 @@
 
 namespace zooblinkofon {
 
-enum InputEventType { KEYDOWN, KEYUP };
+enum class InputAction { KEYDOWN, KEYUP };
+enum class InputButton{
+  BTN0,
+  BTN1,
+  BTN2,
+  BTN3,
+  BTN4,
+  BTN5,
+  BTN6,
+  BTN7,
+  BTN8,
+  BTN9,
+  QUIT
+};
 
 struct InputEvent {
-  InputEventType type;
-  size_t button;
+  InputAction action;
+  InputButton button;
 };
 
 class InputHandler {
