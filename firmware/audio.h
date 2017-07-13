@@ -5,8 +5,15 @@
 #include <string>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
+#include <mutex>
 
 namespace zooblinkofon {
+
+static const size_t kLevelAperture = 24;
+struct LevelInfo {
+  std::array<std::atomic<double>, kLevelAperture> data;
+  std::atomic<size_t> idx;
+};
 
 class AudioMixer {
 public:
@@ -24,7 +31,7 @@ public:
 
 protected:
   std::unordered_map<std::string, Mix_Chunk*> samples_;
-  std::atomic<double> level_;
+  LevelInfo level_;
 };
 
 } // namespace zooblinkofon

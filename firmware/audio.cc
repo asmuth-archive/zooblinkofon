@@ -18,11 +18,12 @@ void get_level_cb(int chan, void* stream, int len, void* udata) {
 
   lvl /= len;
 
-  *static_cast<std::atomic<double>*>(udata) = double(lvl) / 0x7ff;
+  auto linfo = static_cast<LevelInfo*>(udata);
+  linfo->data[linfo->idx++ % kLevelAperture] = double(lvl) / 0x7fff;
 }
 
 AudioMixer::AudioMixer() {
-  if (Mix_OpenAudio(22050, AUDIO_S16SYS, 1, 2048) != 0) {
+  if (Mix_OpenAudio(22050, AUDIO_S16SYS, 1, 512) != 0) {
     std::cerr << "ERROR: Mix_OpenAUdio() failed" << std::endl;
     exit(1);
   }
@@ -68,7 +69,12 @@ void AudioMixer::playSample(const std::string& key, double volume /* = 0.8 */) {
 }
 
 double AudioMixer::getLevel() const {
-  return level_;
+  double lvl = 0.0f;
+  for (size_t i = 0; i < kLevelAperture; ++i) {
+    lvl += level_.data[i];
+  }
+
+  return lvl / kLevelAperture;
 }
 
 } // namespace zooblinkofon
