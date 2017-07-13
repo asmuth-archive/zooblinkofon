@@ -48,8 +48,13 @@ public:
 class HardwareInputDevice : public InputDevice {
 public:
 
+  HardwareInputDevice();
+  ~HardwareInputDevice();
+
   void pollInputs(std::list<InputEvent>* events) override;
 
+protected:
+  volatile void* gpio_;
 };
 
 } // namespace zooblinkofon

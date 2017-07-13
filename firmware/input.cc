@@ -1,7 +1,11 @@
+#include <array>
 #include <termios.h>
 #include <unistd.h>
+#include <fcntl.h>
 #include <iostream>
+#include <sys/mman.h>
 #include "input.h"
+#include "display.h"
 
 namespace zooblinkofon {
 
@@ -84,7 +88,52 @@ void VirtualInputDevice::pollInputs(std::list<InputEvent>* events) {
   }
 }
 
+static const size_t kGPIORegisterOffset = 0x20200000;
+static const size_t kGPIORegisterSize = 4096;
+static const std::array<uint8_t, DisplayState::kButtonCount> kGPIOButtonMap = {
+  2, 3, 4, 7, 9, 10, 11, 17, 22, 27
+};
+
+HardwareInputDevice::HardwareInputDevice() : gpio_(nullptr) {
+  {
+    int fd = open("/dev/mem", O_RDWR | O_SYNC);
+    if (fd == -1) {
+      std::cerr << "ERROR: can't open /dev/mem: " << ::strerror(errno) << std::endl;
+      exit(1);
+    }
+
+     /* mmap GPIO */
+     gpio_ = mmap(
+          NULL,
+          kGPIORegisterSize,
+          PROT_READ | PROT_WRITE,
+          MAP_SHARED,
+          fd,
+          kGPIORegisterOffset);
+
+     close(fd);
+  }
+
+  if (gpio_ == MAP_FAILED) {
+    std::cerr << "ERROR: can't open mmap() gpio register" << std::endl;
+    exit(1);
+  }
+}
+
+HardwareInputDevice::~HardwareInputDevice() {
+  if (gpio_) {
+    munmap((void*) gpio_, kGPIORegisterSize);
+  }
+}
+
 void HardwareInputDevice::pollInputs(std::list<InputEvent>* events) {
+  auto gpio_reg = *((uint32_t*) gpio_ + 13);
+
+  for (size_t i = 0; i < DisplayState::kButtonCount; ++i) {
+    if ((gpio_reg & (1 << kGPIOButtonMap[i])) == 0) {
+      std::cerr << "press: " << i << std::endl;
+    }
+  }
 }
 
 } // namespace zooblinkofon
