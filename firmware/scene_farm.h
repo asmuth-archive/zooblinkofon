@@ -16,6 +16,7 @@ public:
 
 private:
   AnimationFn button_anim_;
+  double atmo_sample_next_;
 };
 
 } // namespace zooblinkofon

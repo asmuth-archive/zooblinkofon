@@ -28,13 +28,16 @@ bool AudioMixer::loadSample(
   return true;
 }
 
-void AudioMixer::playSample(const std::string& key) {
+void AudioMixer::playSample(const std::string& key, double volume /* = 1.0 */) {
   auto iter = samples_.find(key);
   if (iter == samples_.end()) {
     return;
   }
 
-  Mix_PlayChannel(-1, iter->second, 0);
+  auto chan = Mix_PlayChannel(-1, iter->second, 0);
+  if (chan >= 0) {
+    Mix_Volume(chan, MIX_MAX_VOLUME * volume);
+  }
 }
 
 AudioMixer::~AudioMixer() {

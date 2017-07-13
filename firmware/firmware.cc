@@ -3,6 +3,7 @@
 #include <iostream>
 #include <list>
 #include <memory>
+#include <vector>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
 #include <string>
@@ -22,6 +23,15 @@
 using namespace zooblinkofon;
 
 static const uint64_t kRefreshRateHZ = 500;
+
+static const std::vector<std::pair<std::string, std::string>> kAudioSamples = {
+  { "rooster", "media/rooster.wav" },
+  { "goat", "media/goat.wav" },
+  { "duck", "media/duck.wav" },
+  { "birds1", "media/birds1.wav" },
+  { "birds2", "media/birds2.wav" },
+  { "birds3", "media/birds3.wav" },
+};
 
 double get_tick() {
 #ifdef __MACH__
@@ -49,9 +59,11 @@ int main() {
   }
 
   AudioMixer audio;
-  if (!audio.loadSample("notify", "media/notify.wav")) {
-    std::cerr << "ERROR: error while loading sample" << std::endl;
-    return 1;
+  for (const auto& a : kAudioSamples) {
+    if (!audio.loadSample(a.first, a.second)) {
+      std::cerr << "ERROR: error while loading sample: " << a.second << std::endl;
+      return 1;
+    }
   }
 
   InputHandler input;
