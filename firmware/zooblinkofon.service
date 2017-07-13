@@ -2,7 +2,8 @@
 Description=Das Zooblinkfon
 
 [Service]
-ExecStart=/usr/bin/zooblinkofon
+ExecStart=/usr/local/bin/zooblinkofon
+WorkingDirectory=/usr/local/share/zooblinkofon
 
 [Install]
 WantedBy=multi-user.target
