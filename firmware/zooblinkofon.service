@@ -2,9 +2,12 @@
 Description=Das Zooblinkfon
 
 [Service]
+ExecStartPre=/usr/local/share/zooblinkofon/setup_gpio.sh
 ExecStart=/usr/local/bin/zooblinkofon
 WorkingDirectory=/usr/local/share/zooblinkofon
 Restart=always
+StandardOutput=journal
+StandardError=journal
 
 [Install]
 WantedBy=multi-user.target
