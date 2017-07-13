@@ -55,28 +55,28 @@ void scene_farm::update(
         audio->playSample("cow1");
         break;
       case InputButton::BTN4:
-        playButtonAnimation(button_animations::blink(4, 8.0f), 1.0f);
+        playButtonAnimation(button_animations::blink(4, 8.0f), 8.0f);
         audio->playSample("chicken");
         break;
       case InputButton::BTN5:
-        playButtonAnimation(button_animations::blink(5, 8.0f), 1.0f);
-        audio->playSample("notify");
+        playButtonAnimation(button_animations::blink(5, 8.0f), 3.0f);
+        audio->playSample("elephant");
         break;
       case InputButton::BTN6:
-        playButtonAnimation(button_animations::blink(6, 8.0f), 1.0f);
-        audio->playSample("notify");
+        playButtonAnimation(button_animations::blink(6, 8.0f), 3.0f);
+        audio->playSample("monkeys");
         break;
       case InputButton::BTN7:
-        playButtonAnimation(button_animations::blink(7, 8.0f), 1.0f);
-        audio->playSample("notify");
+        playButtonAnimation(button_animations::blink(7, 8.0f), 4.5f);
+        audio->playSample("peacock", 0.5);
         break;
       case InputButton::BTN8:
         playButtonAnimation(button_animations::blink(8, 8.0f), 1.0f);
-        audio->playSample("notify");
+        audio->playSample("sheep");
         break;
       case InputButton::BTN9:
-        playButtonAnimation(button_animations::blink(9, 8.0f), 1.0f);
-        audio->playSample("notify");
+        playButtonAnimation(button_animations::blink(9, 8.0f), 6.0f);
+        audio->playSample("pigs", 0.5);
         break;
     }
   }
