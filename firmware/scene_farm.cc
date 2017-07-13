@@ -16,7 +16,7 @@ void scene_farm::update(
     AudioMixer* audio) {
 
   if (t.t_abs > atmo_sample_next_) {
-    auto r = random() % 32;
+    auto r = random() % 34;
     if (r > 0 && r < 10) {
       audio->playSample("birds1", 0.1);
     } else if (r > 10 && r < 20)  {
@@ -25,10 +25,12 @@ void scene_farm::update(
       audio->playSample("birds3", 0.1);
     } else if (r == 30) {
       audio->playSample("rooster", 0.4);
-      playButtonAnimation(button_animations::blink(2, 8.0f), 5.0f);
     } else if (r == 31) {
       audio->playSample("duck", 0.6);
-      playButtonAnimation(button_animations::blink(2, 8.0f), 5.0f);
+    } else if (r == 32) {
+      audio->playSample("cow2", 0.2);
+    } else if (r == 32) {
+      audio->playSample("chicken", 0.3);
     }
 
     atmo_sample_next_ = t.t_abs + random() % 5;
@@ -49,12 +51,12 @@ void scene_farm::update(
         audio->playSample("duck");
         break;
       case InputButton::BTN3:
-        playButtonAnimation(button_animations::blink(3, 8.0f), 1.0f);
-        audio->playSample("notify");
+        playButtonAnimation(button_animations::blink(3, 8.0f), 3.0f);
+        audio->playSample("cow1");
         break;
       case InputButton::BTN4:
         playButtonAnimation(button_animations::blink(4, 8.0f), 1.0f);
-        audio->playSample("notify");
+        audio->playSample("chicken");
         break;
       case InputButton::BTN5:
         playButtonAnimation(button_animations::blink(5, 8.0f), 1.0f);

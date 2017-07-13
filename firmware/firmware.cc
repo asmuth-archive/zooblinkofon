@@ -31,6 +31,9 @@ static const std::vector<std::pair<std::string, std::string>> kAudioSamples = {
   { "birds1", "media/birds1.wav" },
   { "birds2", "media/birds2.wav" },
   { "birds3", "media/birds3.wav" },
+  { "cow1", "media/cow1.wav" },
+  { "cow2", "media/cow2.wav" },
+  { "chicken", "media/chicken.wav" },
 };
 
 double get_tick() {
