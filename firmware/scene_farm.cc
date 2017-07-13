@@ -17,9 +17,9 @@ void scene_farm::update(
   auto audio_level = audio->getLevel();
 
   display->setAmbientColour(
-      std::min(0.3 + audio_level * 4, 1.0) * 255,
-      std::min(0.5 + audio_level * 3, 1.0) * 255,
-      audio_level * 0);
+      std::min(0.1 + audio_level * 8, 1.0) * 255,
+      std::min(0.2 + audio_level * 3, 1.0) * 255,
+      audio_level * 32);
 
   if (t.t_abs > atmo_sample_next_) {
     auto r = random() % 34;
