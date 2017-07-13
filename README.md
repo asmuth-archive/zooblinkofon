@@ -10,10 +10,10 @@ Build main firmware (for host):
     $ ./configure
     $ make
 
-Run main firmware on host:
+Run main firmware on host (with virtual display):
 
     $ cd firmware
-    $ ./zbf-firmware
+    $ ./zooblinkofon --virtual
 
 
 ### LED Driver (atmega328p/avr)

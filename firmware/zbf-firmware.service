@@ -1,8 +1,0 @@
-[Unit]
-Description=zbf-firmware
-
-[Service]
-ExecStart=/usr/bin/zbf-firmware
-
-[Install]
-WantedBy=multi-user.target

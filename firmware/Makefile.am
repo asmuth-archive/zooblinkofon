@@ -17,20 +17,20 @@ AM_CXXFLAGS = \
     -I$(abs_top_srcdir)/src \
     -I$(abs_top_srcdir)/
 
-bin_PROGRAMS = zbf-firmware
+bin_PROGRAMS = zooblinkofon
 
-zbf_firmware_SOURCES = \
+zooblinkofon_SOURCES = \
     audio.h \
     audio.cc \
     display.h \
     display.cc \
-    firmware.cc \
     input.h \
     input.cc \
     scene.h \
     scene.cc \
     scene_farm.h \
-    scene_farm.cc
+    scene_farm.cc \
+    zooblinkofon.cc
 
-zbf_firmware_LDADD = -lSDL2 -lSDL2_mixer
+zooblinkofon_LDADD = -lSDL2 -lSDL2_mixer
 
