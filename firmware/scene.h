@@ -1,20 +1,12 @@
 #pragma once
 #include <stdint.h>
 #include <list>
-#include <functional>
 #include <SDL2/SDL.h>
+#include "display.h"
 #include "input.h"
 
 namespace zooblinkofon {
 class AudioMixer;
-class DisplayState;
-
-struct AnimationTime {
-  double t_abs;
-  double t_diff;
-};
-
-using AnimationFn = std::function<void (const AnimationTime&, DisplayState*)>;
 
 class Scene {
 public:
@@ -27,6 +19,8 @@ public:
       DisplayState* display,
       AudioMixer* audio) = 0;
 
+protected:
+  AnimationFn button_anim_;
 };
 
 } // namespace zooblinkofon

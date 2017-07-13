@@ -82,5 +82,29 @@ void VirtualDisplay::render(DisplayState* display) {
   SDL_RenderPresent(render_);
 }
 
+namespace button_animations {
+
+AnimationFn wheel(double speed) {
+  return [speed] (const AnimationTime& t, DisplayState* display) {
+    for (size_t i = 0; i < DisplayState::kButtonCount; ++i) {
+      display->setButton(
+          i,
+          uint64_t(t.t_abs * speed) % DisplayState::kButtonCount == i);
+    }
+  };
+}
+
+AnimationFn negative_wheel(double speed) {
+  return [speed] (const AnimationTime& t, DisplayState* display) {
+    for (size_t i = 0; i < DisplayState::kButtonCount; ++i) {
+      display->setButton(
+          i,
+          uint64_t(t.t_abs * speed) % DisplayState::kButtonCount != i);
+    }
+  };
+}
+
+} // namespace button_animations
+
 } // namespace zooblinkofon
 
