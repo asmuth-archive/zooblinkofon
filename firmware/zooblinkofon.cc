@@ -41,6 +41,7 @@ static const std::vector<std::pair<std::string, std::string>> kAudioSamples = {
   { "peacock", "media/peacock.wav" },
   { "sheep", "media/sheep.wav" },
   { "pigs", "media/pigs.wav" },
+  { "winxp", "media/winxp.wav" },
 };
 
 double get_tick() {
@@ -118,6 +119,9 @@ int main(int argc, char** argv) {
 
   /* init input handler */
   InputHandler input;
+
+  /* hello world */
+  audio.playSample("winxp");
 
   /* main animation loop */
   AnimationTime t{ .t_abs = 0, .t_diff = 0 };
