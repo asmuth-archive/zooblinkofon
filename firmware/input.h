@@ -4,6 +4,7 @@
 #include <list>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
+#include "display.h"
 
 namespace zooblinkofon {
 
@@ -32,7 +33,7 @@ public:
 
   virtual ~InputDevice() = default;
 
-  virtual void pollInputs(std::list<InputEvent>* events) = 0;
+  virtual void pollInputs(const AnimationTime& t, std::list<InputEvent>* events) = 0;
 
 };
 
@@ -41,7 +42,7 @@ public:
 
   VirtualInputDevice();
 
-  void pollInputs(std::list<InputEvent>* events) override;
+  void pollInputs(const AnimationTime& t, std::list<InputEvent>* events) override;
 
 };
 
@@ -51,10 +52,16 @@ public:
   HardwareInputDevice();
   ~HardwareInputDevice();
 
-  void pollInputs(std::list<InputEvent>* events) override;
+  void pollInputs(const AnimationTime& t, std::list<InputEvent>* events) override;
 
 protected:
+  struct ButtonState {
+    bool pressed;
+    double time;
+  };
+
   volatile void* gpio_;
+  std::array<ButtonState, DisplayState::kButtonCount> buttons_;
 };
 
 } // namespace zooblinkofon

@@ -9,6 +9,19 @@
 
 namespace zooblinkofon {
 
+static const std::array<InputButton, DisplayState::kButtonCount> kButtonMap = {
+  InputButton::BTN0,
+  InputButton::BTN1,
+  InputButton::BTN2,
+  InputButton::BTN3,
+  InputButton::BTN4,
+  InputButton::BTN5,
+  InputButton::BTN6,
+  InputButton::BTN7,
+  InputButton::BTN8,
+  InputButton::BTN9,
+};
+
 VirtualInputDevice::VirtualInputDevice() {
   {
     struct termios t;
@@ -30,7 +43,9 @@ bool stdin_pending() {
   return FD_ISSET(STDIN_FILENO, &fds);
 }
 
-void VirtualInputDevice::pollInputs(std::list<InputEvent>* events) {
+void VirtualInputDevice::pollInputs(
+    const AnimationTime& t,
+    std::list<InputEvent>* events) {
   // read key presses fron stdin
   while (stdin_pending()) {
     InputButton btn;
@@ -88,10 +103,11 @@ void VirtualInputDevice::pollInputs(std::list<InputEvent>* events) {
   }
 }
 
+static const double kHysteresisTime = 0.01;
 static const size_t kGPIORegisterOffset = 0x20200000;
 static const size_t kGPIORegisterSize = 4096;
 static const std::array<uint8_t, DisplayState::kButtonCount> kGPIOButtonMap = {
-  2, 3, 4, 7, 9, 10, 11, 17, 22, 27
+  2, 27, 17, 3, 4, 10, 22, 11, 9, 7
 };
 
 HardwareInputDevice::HardwareInputDevice() : gpio_(nullptr) {
@@ -118,6 +134,11 @@ HardwareInputDevice::HardwareInputDevice() : gpio_(nullptr) {
     std::cerr << "ERROR: can't open mmap() gpio register" << std::endl;
     exit(1);
   }
+
+  for (size_t i = 0; i < buttons_.size(); ++i) {
+    buttons_[i].pressed = false;
+    buttons_[i].time = 0;
+  }
 }
 
 HardwareInputDevice::~HardwareInputDevice() {
@@ -126,13 +147,28 @@ HardwareInputDevice::~HardwareInputDevice() {
   }
 }
 
-void HardwareInputDevice::pollInputs(std::list<InputEvent>* events) {
+void HardwareInputDevice::pollInputs(
+    const AnimationTime& t,
+    std::list<InputEvent>* events) {
   auto gpio_reg = *((uint32_t*) gpio_ + 13);
 
   for (size_t i = 0; i < DisplayState::kButtonCount; ++i) {
-    if ((gpio_reg & (1 << kGPIOButtonMap[i])) == 0) {
-      std::cerr << "press: " << i << std::endl;
+    if (t.t_abs - buttons_[i].time < kHysteresisTime) {
+      continue;
     }
+
+    bool active = (gpio_reg & (1 << kGPIOButtonMap[i])) == 0;
+    if (buttons_[i].pressed == active) {
+      continue;
+    }
+
+    InputEvent ev;
+    ev.action = active ? InputAction::KEYDOWN : InputAction::KEYUP;
+    ev.button = kButtonMap[i];
+    events->emplace_back(ev);
+
+    buttons_[i].pressed = active;
+    buttons_[i].time = t.t_abs;
   }
 }
 

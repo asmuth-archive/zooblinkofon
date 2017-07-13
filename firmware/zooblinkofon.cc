@@ -137,7 +137,7 @@ int main(int argc, char** argv) {
     t.t_abs = t_start;
 
     std::list<InputEvent> input_events;
-    input->pollInputs(&input_events);
+    input->pollInputs(t, &input_events);
 
     bool quit = false;
     for (const auto& e : input_events) {
