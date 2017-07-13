@@ -19,7 +19,7 @@ public:
   using RGBType = std::array<uint8_t, 3>;
   using ButtonRegisterType = uint16_t;
   static const size_t kButtonCount = 10;
-  static_assert(sizeof(ButtonRegisterType) * 8 >=  kButtonCount);
+  static_assert(sizeof(ButtonRegisterType) * 8 >=  kButtonCount, "invalid button count");
 
   DisplayState();
 
