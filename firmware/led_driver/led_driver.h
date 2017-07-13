@@ -1,8 +1,8 @@
 #pragma once
 #include <stdint.h>
 
-namespace iot9000 {
-namespace avr {
+namespace zooblinkofon {
+namespace led_driver {
 
 struct __attribute__((packed)) Colour {
   uint8_t g;
@@ -38,6 +38,19 @@ protected:
   ButtonRegisterType buttons_;
 };
 
-} // namespace avr
-} // namespace iot9000
+class SerialPort {
+public:
+
+  SerialPort();
+
+  bool recvPacket(uint8_t* pkt, uint16_t len);
+  bool recv(uint8_t* byte);
+  bool recvNonblock(uint8_t* byte);
+  bool hasPendingData() const;
+  void wait(uint32_t t) const;
+
+};
+
+} // namespace led_driver
+} // namespace zooblinkofon
 

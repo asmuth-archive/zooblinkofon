@@ -18,8 +18,8 @@
 /*
  *  Structure of the LED array
  *
- * iot9000::avr::Colour:     RGB  for WS2812S/B/C/D, SK6812, SK6812Mini, SK6812WWA, APA104, APA106
- * iot9000::avr::ColourW:    RGBW for SK6812RGBW
+ * zooblinkofon::led_driver::Colour:     RGB  for WS2812S/B/C/D, SK6812, SK6812Mini, SK6812WWA, APA104, APA106
+ * zooblinkofon::led_driver::ColourW:    RGBW for SK6812RGBW
  */
 
 
@@ -38,8 +38,8 @@
  *         - Wait 50µs to reset the LEDs
  */
 
-void ws2812_setleds     (struct iot9000::avr::Colour  *ledarray, uint16_t number_of_leds);
-void ws2812_setleds_pin (struct iot9000::avr::Colour  *ledarray, uint16_t number_of_leds,uint8_t pinmask);
+void ws2812_setleds     (struct zooblinkofon::led_driver::Colour  *ledarray, uint16_t number_of_leds);
+void ws2812_setleds_pin (struct zooblinkofon::led_driver::Colour  *ledarray, uint16_t number_of_leds,uint8_t pinmask);
 
 /* 
  * Old interface / Internal functions
@@ -81,11 +81,11 @@ void ws2812_sendarray_mask(uint8_t *array,uint16_t length, uint8_t pinmask);
 #include <util/delay.h>
 
 // Setleds for standard RGB 
-void inline ws2812_setleds(struct iot9000::avr::Colour *ledarray, uint16_t leds) {
+void inline ws2812_setleds(struct zooblinkofon::led_driver::Colour *ledarray, uint16_t leds) {
    ws2812_setleds_pin(ledarray,leds, _BV(ws2812_pin));
 }
 
-void inline ws2812_setleds_pin(struct iot9000::avr::Colour *ledarray, uint16_t leds, uint8_t pinmask) {
+void inline ws2812_setleds_pin(struct zooblinkofon::led_driver::Colour *ledarray, uint16_t leds, uint8_t pinmask) {
   ws2812_sendarray_mask((uint8_t*)ledarray,leds+leds+leds,pinmask);
   _delay_us(ws2812_resettime);
 }
