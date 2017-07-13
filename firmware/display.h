@@ -52,9 +52,11 @@ protected:
 };
 
 namespace button_animations {
-AnimationFn wheel(double speed);
-AnimationFn negative_wheel(double speed);
+AnimationFn wheel(AnimationTime t0, double speed, size_t start_index = 0);
+AnimationFn wheel_negative(AnimationTime t0, double speed, size_t start_index = 0);
 AnimationFn blink(size_t index, double speed);
+AnimationFn linear(AnimationTime t0, double speed, size_t start_index = 0);
+AnimationFn linear_negative(AnimationTime t0, double speed, size_t start_index = 0);
 } // namespace button_animations
 
 } // namespace zooblinkofon

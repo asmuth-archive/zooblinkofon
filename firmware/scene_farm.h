@@ -6,7 +6,7 @@ namespace zooblinkofon {
 class scene_farm : public Scene {
 public:
 
-  scene_farm();
+  scene_farm(const AnimationTime& t);
 
   void update(
       const AnimationTime& t,

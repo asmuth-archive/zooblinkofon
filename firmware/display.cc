@@ -84,22 +84,22 @@ void VirtualDisplay::render(DisplayState* display) {
 
 namespace button_animations {
 
-AnimationFn wheel(double speed) {
-  return [speed] (const AnimationTime& t, DisplayState* display) {
+AnimationFn wheel(AnimationTime t0, double speed, size_t start_index /* = 0 */) {
+  return [=] (const AnimationTime& t, DisplayState* display) {
+    uint64_t seq = ((t.t_abs - t0.t_abs) * speed) + start_index;
+
     for (size_t i = 0; i < DisplayState::kButtonCount; ++i) {
-      display->setButton(
-          i,
-          uint64_t(t.t_abs * speed) % DisplayState::kButtonCount == i);
+      display->setButton(i, seq % DisplayState::kButtonCount == i);
     }
   };
 }
 
-AnimationFn negative_wheel(double speed) {
-  return [speed] (const AnimationTime& t, DisplayState* display) {
+AnimationFn wheel_negative(AnimationTime t0, double speed, size_t start_index /* = 0 */) {
+  return [=] (const AnimationTime& t, DisplayState* display) {
+    uint64_t seq = ((t.t_abs - t0.t_abs) * speed) + start_index;
+
     for (size_t i = 0; i < DisplayState::kButtonCount; ++i) {
-      display->setButton(
-          i,
-          uint64_t(t.t_abs * speed) % DisplayState::kButtonCount != i);
+      display->setButton(i, seq % DisplayState::kButtonCount != i);
     }
   };
 }
@@ -110,6 +110,30 @@ AnimationFn blink(size_t index, double speed) {
       display->setButton(
         i,
         i == index ? uint64_t(t.t_abs * speed) % 2 : false);
+    }
+  };
+}
+
+AnimationFn linear(AnimationTime t0, double speed, size_t start_index /* = 0 */) {
+  return [=] (const AnimationTime& t, DisplayState* display) {
+    for (size_t i = 0; i < DisplayState::kButtonCount; ++i) {
+      uint64_t seq = ((t.t_abs - t0.t_abs) * speed) + start_index;
+
+      display->setButton(
+          i,
+          seq % (DisplayState::kButtonCount / 2) == i % (DisplayState::kButtonCount / 2));
+    }
+  };
+}
+
+AnimationFn linear_negative(AnimationTime t0, double speed, size_t start_index /* = 0 */) {
+  return [=] (const AnimationTime& t, DisplayState* display) {
+    for (size_t i = 0; i < DisplayState::kButtonCount; ++i) {
+      uint64_t seq = ((t.t_abs - t0.t_abs) * speed) + start_index;
+
+      display->setButton(
+          i,
+          seq % (DisplayState::kButtonCount / 2) != i % (DisplayState::kButtonCount / 2));
     }
   };
 }

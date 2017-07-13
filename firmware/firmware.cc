@@ -58,9 +58,8 @@ int main() {
   DisplayState display;
   VirtualDisplay virtual_display;
 
-  std::unique_ptr<Scene> scene(new scene_farm());;
-
   AnimationTime t{ .t_abs = 0, .t_diff = 0 };
+  std::unique_ptr<Scene> scene(new scene_farm(t));;
   for (auto t0 = get_tick(); ; ) {
     auto t_start = get_tick() - t0;
     t.t_diff = t_start - t.t_abs;
@@ -75,7 +74,7 @@ int main() {
       }
     }
 
-    printf("t_abs=%f, t_diff=%f, freq=%f\r", t.t_abs, t.t_diff, 1.0f / t.t_diff);
+    //printf("t_abs=%f, t_diff=%f, freq=%f\r", t.t_abs, t.t_diff, 1.0f / t.t_diff);
     scene->updateScene(t, input_events, &display, &audio);
     virtual_display.render(&display);
 
