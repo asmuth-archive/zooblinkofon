@@ -1,3 +1,7 @@
+#include <unistd.h>
+#include <fcntl.h>
+#include <termios.h>
+#include <iostream>
 #include "display.h"
 
 namespace zooblinkofon {
@@ -47,7 +51,7 @@ VirtualDisplay::~VirtualDisplay() {
   SDL_DestroyWindow(window_);
 }
 
-void VirtualDisplay::render(DisplayState* display) {
+void VirtualDisplay::render(const AnimationTime& t, DisplayState* display) {
   auto ambient = display->getAmbientColour();
   SDL_SetRenderDrawColor(render_, 42, 42, 42, 255);
   SDL_RenderClear(render_);
@@ -82,9 +86,74 @@ void VirtualDisplay::render(DisplayState* display) {
   SDL_RenderPresent(render_);
 }
 
-HardwareDisplay::HardwareDisplay() {}
-HardwareDisplay::~HardwareDisplay() {}
-void HardwareDisplay::render(DisplayState* display) {}
+HardwareDisplay::HardwareDisplay() : serial_(-1) {
+  static const char kSerialDevicePath[] = "/dev/serial0";
+
+  serial_ = ::open(kSerialDevicePath, O_RDWR);
+  if (serial_ < 0) {
+    std::cerr <<
+        "ERROR: can't open " << kSerialDevicePath << ": " <<
+        ::strerror(errno) << std::endl;;
+
+    exit(1);
+  }
+
+  struct termios tty;
+  memset(&tty, 0, sizeof(tty));
+  if (tcgetattr(serial_, &tty) != 0) {
+    std::cerr <<
+        "ERROR: can't open " << kSerialDevicePath << ": " <<
+        ::strerror(errno) << std::endl;;
+
+    exit(1);
+  }
+
+	tty.c_cflag = B38400 | CS8 | CLOCAL | CREAD;
+	tty.c_iflag = IGNPAR;
+	tty.c_oflag = 0;
+	tty.c_lflag = 0;
+
+  if (tcsetattr(serial_, TCSANOW, &tty) != 0) {
+    std::cerr <<
+        "ERROR: can't open " << kSerialDevicePath << ": " <<
+        ::strerror(errno) << std::endl;;
+
+    exit(1);
+  }
+}
+
+HardwareDisplay::~HardwareDisplay() {
+  if (serial_ >= 0) {
+    ::close(serial_);
+  }
+}
+
+void HardwareDisplay::render(const AnimationTime& t, DisplayState* display) {
+  if (t.t_abs - last_update_ < (1.0f / kRefreshRateHZ)) {
+    return;
+  }
+
+  static const uint8_t kPacketLength = 5;
+  uint8_t pkg[kPacketLength];
+
+  const auto& ambient = display->getAmbientColour();
+  pkg[0] = ambient[0];
+  pkg[1] = ambient[1];
+  pkg[2] = ambient[2];
+
+  uint16_t buttons = 0;
+  for (size_t i = 0; i < DisplayState::kButtonCount; ++i) {
+    if (display->getButton(i)) {
+      buttons |= 1 << i;
+    }
+  }
+
+  pkg[3] = buttons;
+  pkg[4] = buttons >> 8;
+
+  write(serial_, pkg, kPacketLength);
+  last_update_ = t.t_abs;
+}
 
 namespace button_animations {
 

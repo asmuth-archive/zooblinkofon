@@ -62,7 +62,7 @@ double get_tick() {
 #endif
 }
 
-bool getopt_valid(char r) {
+bool getopt_valid(int r) {
   return r != -1 && r != '?'; 
 }
 
@@ -144,7 +144,7 @@ int main(int argc, char** argv) {
 
     //printf("t_abs=%f, t_diff=%f, freq=%f\r", t.t_abs, t.t_diff, 1.0f / t.t_diff);
     scene->updateScene(t, input_events, &display, &audio);
-    display_driver->render(&display);
+    display_driver->render(t, &display);
 
     auto t_loop = (get_tick() - t0) - t_start;
     if (t_loop < 1.0f / kRefreshRateHZ) {

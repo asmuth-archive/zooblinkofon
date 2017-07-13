@@ -43,7 +43,7 @@ public:
 
   virtual ~DisplayDriver() = default;
 
-  virtual void render(DisplayState* state) = 0;
+  virtual void render(const AnimationTime& t, DisplayState* state) = 0;
 
 };
 
@@ -53,7 +53,7 @@ public:
   VirtualDisplay();
   ~VirtualDisplay();
 
-  void render(DisplayState* state) override;
+  void render(const AnimationTime& t, DisplayState* state) override;
 
 protected:
   SDL_Window* window_;
@@ -63,11 +63,16 @@ protected:
 class HardwareDisplay : public DisplayDriver {
 public:
 
+  static const uint16_t kRefreshRateHZ = 60;
+
   HardwareDisplay();
   ~HardwareDisplay();
 
-  void render(DisplayState* state) override;
+  void render(const AnimationTime& t, DisplayState* state) override;
 
+protected:
+  int serial_;
+  double last_update_;
 };
 
 namespace button_animations {
