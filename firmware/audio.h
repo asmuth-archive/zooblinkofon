@@ -17,7 +17,7 @@ public:
       const std::string& key,
       const std::string& filename);
 
-  void playSample(const std::string& key, double volume = 1.0);
+  void playSample(const std::string& key, double volume = 0.8);
 
 protected:
   std::unordered_map<std::string, Mix_Chunk*> samples_;

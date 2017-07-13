@@ -28,7 +28,7 @@ bool AudioMixer::loadSample(
   return true;
 }
 
-void AudioMixer::playSample(const std::string& key, double volume /* = 1.0 */) {
+void AudioMixer::playSample(const std::string& key, double volume /* = 0.8 */) {
   auto iter = samples_.find(key);
   if (iter == samples_.end()) {
     return;
