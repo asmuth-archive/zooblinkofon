@@ -86,7 +86,7 @@ void VirtualDisplay::render(const AnimationTime& t, DisplayState* display) {
   SDL_RenderPresent(render_);
 }
 
-HardwareDisplay::HardwareDisplay() : serial_(-1) {
+HardwareDisplay::HardwareDisplay() : serial_(-1), last_update_(0.0f) {
   static const char kSerialDevicePath[] = "/dev/serial0";
 
   serial_ = ::open(kSerialDevicePath, O_RDWR);
