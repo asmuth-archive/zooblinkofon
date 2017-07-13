@@ -14,6 +14,11 @@ void scene_farm::update(
     const std::list<InputEvent>& input_events,
     DisplayState* display,
     AudioMixer* audio) {
+  auto audio_level = audio->getLevel();
+  display->setAmbientColour(
+      std::min(0.3 + audio_level * 8, 1.0) * 255,
+      std::min(0.6 + audio_level * 4, 1.0) * 255,
+      audio_level * 0);
 
   if (t.t_abs > atmo_sample_next_) {
     auto r = random() % 34;

@@ -3,13 +3,40 @@
 
 namespace zooblinkofon {
 
+void get_level_cb(int chan, void* stream, int len, void* udata) {
+  auto smpl_buf = (Sint16*) stream;
+  auto smpl_len = len / 4;
+
+  if (smpl_len == 0) {
+    return;
+  }
+
+  auto lvl = 0;
+  for (size_t i = 1; i < smpl_len; ++i) {
+    lvl += std::abs(smpl_buf[i]);
+  }
+
+  lvl /= len;
+
+  *static_cast<std::atomic<double>*>(udata) = double(lvl) / 0x7ff;
+}
+
 AudioMixer::AudioMixer() {
-  if (Mix_OpenAudio(22050, AUDIO_S16SYS, 1, 4096) != 0) {
+  if (Mix_OpenAudio(22050, AUDIO_S16SYS, 1, 2048) != 0) {
     std::cerr << "ERROR: Mix_OpenAUdio() failed" << std::endl;
     exit(1);
   }
 
+  Mix_RegisterEffect(MIX_CHANNEL_POST, get_level_cb, NULL, &level_);
   Mix_AllocateChannels(64);
+}
+
+AudioMixer::~AudioMixer() {
+  for (auto& s : samples_) {
+    Mix_FreeChunk(s.second);
+  }
+
+  Mix_CloseAudio();
 }
 
 bool AudioMixer::loadSample(
@@ -40,12 +67,8 @@ void AudioMixer::playSample(const std::string& key, double volume /* = 0.8 */) {
   }
 }
 
-AudioMixer::~AudioMixer() {
-  for (auto& s : samples_) {
-    Mix_FreeChunk(s.second);
-  }
-
-  Mix_CloseAudio();
+double AudioMixer::getLevel() const {
+  return level_;
 }
 
 } // namespace zooblinkofon

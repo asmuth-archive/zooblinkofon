@@ -118,7 +118,12 @@ int main(int argc, char** argv) {
   }
 
   /* init input handler */
-  InputHandler input;
+  std::unique_ptr<InputDevice> input;
+  if (opt_virtual) {
+    input.reset(new VirtualInputDevice());
+  } else {
+    input.reset(new HardwareInputDevice());
+  }
 
   /* hello world */
   audio.playSample("winxp");
@@ -132,7 +137,7 @@ int main(int argc, char** argv) {
     t.t_abs = t_start;
 
     std::list<InputEvent> input_events;
-    input.pollInputs(&input_events);
+    input->pollInputs(&input_events);
 
     bool quit = false;
     for (const auto& e : input_events) {

@@ -27,12 +27,28 @@ struct InputEvent {
   InputButton button;
 };
 
-class InputHandler {
+class InputDevice {
 public:
 
-  InputHandler();
+  virtual ~InputDevice() = default;
 
-  void pollInputs(std::list<InputEvent>* events);
+  virtual void pollInputs(std::list<InputEvent>* events) = 0;
+
+};
+
+class VirtualInputDevice : public InputDevice {
+public:
+
+  VirtualInputDevice();
+
+  void pollInputs(std::list<InputEvent>* events) override;
+
+};
+
+class HardwareInputDevice : public InputDevice {
+public:
+
+  void pollInputs(std::list<InputEvent>* events) override;
 
 };
 

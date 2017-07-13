@@ -5,7 +5,7 @@
 
 namespace zooblinkofon {
 
-InputHandler::InputHandler() {
+VirtualInputDevice::VirtualInputDevice() {
   {
     struct termios t;
     tcgetattr(STDIN_FILENO, &t);
@@ -26,7 +26,7 @@ bool stdin_pending() {
   return FD_ISSET(STDIN_FILENO, &fds);
 }
 
-void InputHandler::pollInputs(std::list<InputEvent>* events) {
+void VirtualInputDevice::pollInputs(std::list<InputEvent>* events) {
   // read key presses fron stdin
   while (stdin_pending()) {
     InputButton btn;
@@ -82,6 +82,9 @@ void InputHandler::pollInputs(std::list<InputEvent>* events) {
       events->emplace_back(ev);
     }
   }
+}
+
+void HardwareInputDevice::pollInputs(std::list<InputEvent>* events) {
 }
 
 } // namespace zooblinkofon
