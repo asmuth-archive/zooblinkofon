@@ -104,6 +104,16 @@ AnimationFn negative_wheel(double speed) {
   };
 }
 
+AnimationFn blink(size_t index, double speed) {
+  return [index, speed] (const AnimationTime& t, DisplayState* display) {
+    for (size_t i = 0; i < DisplayState::kButtonCount; ++i) {
+      display->setButton(
+        i,
+        i == index ? uint64_t(t.t_abs * speed) % 2 : false);
+    }
+  };
+}
+
 } // namespace button_animations
 
 } // namespace zooblinkofon

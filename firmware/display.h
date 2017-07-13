@@ -54,6 +54,7 @@ protected:
 namespace button_animations {
 AnimationFn wheel(double speed);
 AnimationFn negative_wheel(double speed);
+AnimationFn blink(size_t index, double speed);
 } // namespace button_animations
 
 } // namespace zooblinkofon

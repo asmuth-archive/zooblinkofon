@@ -76,7 +76,7 @@ int main() {
     }
 
     printf("t_abs=%f, t_diff=%f, freq=%f\r", t.t_abs, t.t_diff, 1.0f / t.t_diff);
-    scene->update(t, input_events, &display, &audio);
+    scene->updateScene(t, input_events, &display, &audio);
     virtual_display.render(&display);
 
     auto t_loop = (get_tick() - t0) - t_start;
