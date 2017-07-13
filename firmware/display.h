@@ -38,17 +38,36 @@ protected:
   RGBType ambient_colour_;
 };
 
-class VirtualDisplay {
+class DisplayDriver {
+public:
+
+  virtual ~DisplayDriver() = default;
+
+  virtual void render(DisplayState* state) = 0;
+
+};
+
+class VirtualDisplay : public DisplayDriver {
 public:
 
   VirtualDisplay();
   ~VirtualDisplay();
 
-  void render(DisplayState* state);
+  void render(DisplayState* state) override;
 
 protected:
   SDL_Window* window_;
   SDL_Renderer* render_;
+};
+
+class HardwareDisplay : public DisplayDriver {
+public:
+
+  HardwareDisplay();
+  ~HardwareDisplay();
+
+  void render(DisplayState* state) override;
+
 };
 
 namespace button_animations {

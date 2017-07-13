@@ -82,6 +82,10 @@ void VirtualDisplay::render(DisplayState* display) {
   SDL_RenderPresent(render_);
 }
 
+HardwareDisplay::HardwareDisplay() {}
+HardwareDisplay::~HardwareDisplay() {}
+void HardwareDisplay::render(DisplayState* display) {}
+
 namespace button_animations {
 
 AnimationFn wheel(AnimationTime t0, double speed, size_t start_index /* = 0 */) {

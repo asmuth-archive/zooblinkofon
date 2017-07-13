@@ -1,5 +1,7 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include <unistd.h>
+#include <getopt.h>
 #include <iostream>
 #include <list>
 #include <memory>
@@ -60,12 +62,43 @@ double get_tick() {
 #endif
 }
 
-int main() {
-  if (SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO) != 0) {
-    std::cerr << "ERROR: SDL_Init() failed" << std::endl;
-    exit(1);
+bool getopt_valid(char r) {
+  return r != -1 && r != '?'; 
+}
+
+int main(int argc, char** argv) {
+  bool opt_virtual = false;
+
+  /* parse flags */
+  static const struct option opts[] = {
+    { "virtual", no_argument, 0, 0 }
+  };
+
+  for (int opt_idx; getopt_valid(getopt_long(argc, argv, "", opts, &opt_idx)); ) {
+    std::string opt(opts[opt_idx].name);
+
+    if (opt == "virtual") {
+      opt_virtual = true;
+      continue;
+    }
+
+    std::cerr << "Invalid option: " << opt << std::endl;
+    return 1;
   }
 
+  /* init sdl */
+  {
+    auto sdl_opts = SDL_INIT_AUDIO;
+    if (opt_virtual) {
+      sdl_opts |= SDL_INIT_VIDEO;
+    }
+    if (SDL_Init(sdl_opts) != 0) {
+      std::cerr << "ERROR: SDL_Init() failed" << std::endl;
+      return 1;
+    }
+  }
+
+  /* init audio and load samples */
   AudioMixer audio;
   for (const auto& a : kAudioSamples) {
     if (!audio.loadSample(a.first, a.second)) {
@@ -74,10 +107,19 @@ int main() {
     }
   }
 
-  InputHandler input;
+  /* init display */
   DisplayState display;
-  VirtualDisplay virtual_display;
+  std::unique_ptr<DisplayDriver> display_driver;
+  if (opt_virtual) {
+    display_driver.reset(new VirtualDisplay());
+  } else {
+    display_driver.reset(new HardwareDisplay());
+  }
 
+  /* init input handler */
+  InputHandler input;
+
+  /* main animation loop */
   AnimationTime t{ .t_abs = 0, .t_diff = 0 };
   std::unique_ptr<Scene> scene(new scene_farm(t));;
   for (auto t0 = get_tick(); ; ) {
@@ -88,15 +130,21 @@ int main() {
     std::list<InputEvent> input_events;
     input.pollInputs(&input_events);
 
+    bool quit = false;
     for (const auto& e : input_events) {
       if (e.button == InputButton::QUIT) {
-        exit(0);
+        quit = true;
+        break;
       }
+    }
+
+    if (quit) {
+      break;
     }
 
     //printf("t_abs=%f, t_diff=%f, freq=%f\r", t.t_abs, t.t_diff, 1.0f / t.t_diff);
     scene->updateScene(t, input_events, &display, &audio);
-    virtual_display.render(&display);
+    display_driver->render(&display);
 
     auto t_loop = (get_tick() - t0) - t_start;
     if (t_loop < 1.0f / kRefreshRateHZ) {
