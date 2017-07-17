@@ -30,6 +30,8 @@ zooblinkofon_SOURCES = \
     scene.cc \
     scene_farm.h \
     scene_farm.cc \
+    scene_water.h \
+    scene_water.cc \
     zooblinkofon.cc
 
 zooblinkofon_LDADD = -lSDL2 -lSDL2_mixer

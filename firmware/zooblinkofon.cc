@@ -21,6 +21,7 @@
 #include "input.h"
 #include "scene.h"
 #include "scene_farm.h"
+#include "scene_water.h"
 
 using namespace zooblinkofon;
 
@@ -41,6 +42,9 @@ static const std::vector<std::pair<std::string, std::string>> kAudioSamples = {
   { "peacock", "media/peacock.wav" },
   { "sheep", "media/sheep.wav" },
   { "pigs", "media/pigs.wav" },
+  { "dolphin", "media/dolphin.wav" },
+  { "seagull", "media/seagull.wav" },
+  { "waves", "media/waves.wav" },
   { "winxp", "media/winxp.wav" },
 };
 
@@ -131,6 +135,8 @@ int main(int argc, char** argv) {
   /* main animation loop */
   AnimationTime t{ .t_abs = 0, .t_diff = 0 };
   std::unique_ptr<Scene> scene(new scene_farm(t));;
+
+  size_t num_pressed = 0;
   for (auto t0 = get_tick(); ; ) {
     auto t_start = get_tick() - t0;
     t.t_diff = t_start - t.t_abs;
@@ -141,6 +147,16 @@ int main(int argc, char** argv) {
 
     bool quit = false;
     for (const auto& e : input_events) {
+      if (e.action == InputAction::KEYDOWN) {
+        if (++num_pressed > 1) {
+          scene.reset(new scene_water(t));
+        }
+      }
+
+      if (e.action == InputAction::KEYUP) {
+        --num_pressed;
+      }
+
       if (e.button == InputButton::QUIT) {
         quit = true;
         break;
